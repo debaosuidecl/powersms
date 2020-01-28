@@ -1,0 +1,47 @@
+.Auth {
+  max-width: 700px;
+  width: 80%;
+  border: 1px solid #bbb;
+  margin: 20px auto;
+  /* min-height: 400px; */
+  padding: 20px;
+  display: flex;
+  flex-flow: column;
+}
+.Auth p {
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  text-align: center;
+  font-size: 23px;
+}
+.FormCont {
+  width: 80%;
+  margin: auto;
+  margin-bottom: 20px;
+}
+
+.FormCont input {
+  width: 100%;
+  border: none;
+  outline: none;
+  border: 1px solid #bbb;
+  padding: 10px;
+}
+.FormCont button {
+  padding: 10px;
+  border: 1px solid #444;
+  background: none;
+  color: #444;
+  cursor: pointer;
+  transition: 0.5s;
+}
+.FormCont button:disabled {
+  cursor: not-allowed;
+  background: #eee;
+  color: #bbb;
+}
+
+.FormCont button:hover {
+  background: #444;
+  color: white;
+  transition: 0.5s;
+}

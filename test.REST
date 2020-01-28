@@ -1,0 +1,10 @@
+###
+POST  http://localhost:8023/api/register 
+
+Content-Type: application/json
+
+{
+  "fullName": "Jared Macinelli",
+  "email": "hello@freshdatanow.com",
+  "password": "FiverrWork777"
+}

@@ -1,0 +1,17 @@
+GET http://163.172.233.88:8001?command=submit&ani=158f332014451&dnis=1978595447255&username=FreshDataTFN&password=bc3k6d7y&message=TestFROMCLEMENT
+
+###
+GET http://163.172.233.88:8001?username=FreshDataTFN&password=bc3k6d7y&messageId=5e225af9-4016-29d7-c8aa-8801ab776d85&command=query
+###
+GET http://localhost:7000/api/checkForFileExistence
+
+###
+POST http://localhost:8023/api/register
+ 
+content-type: application/json
+{
+  "fullName": "Deba",
+  "email": "debaosuidecl@gmail.com",
+  "password": "FiverrWork777"
+}
+

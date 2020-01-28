@@ -1,0 +1,182 @@
+* {
+  box-sizing: border-box;
+}
+input {
+  outline: none;
+}
+.BeastModeCont {
+  width: 80%;
+  padding: 20px 0px;
+  margin: 30px auto;
+  box-shadow: 1px 0px 14px #eee;
+  min-height: 300px;
+  border-radius: 10px;
+}
+.domainInputCont {
+  /* padding: 5px; */
+
+  margin-top: 30px;
+}
+
+.domainInputCont input {
+  width: 100%;
+  font-size: 17px;
+  padding: 10px 10px;
+  border: none;
+  outline: none;
+  border-bottom: 1px solid #eee;
+}
+.PriceTLD {
+  display: flex;
+}
+.PriceControl span {
+  color: #bbb;
+}
+.PriceControl {
+  /* background: gold; */
+  /* width: 100%; */
+  padding-left: 15px;
+  flex: 1;
+  align-items: flex-start;
+  /* display: flex; */
+  border-right: 1px solid #eee;
+  height: 100%;
+  /* display: flex; */
+  /* flex-flow: column; */
+  text-align: left;
+}
+.Right {
+  flex: 1;
+}
+.PriceControl input {
+  text-align: left;
+  padding: 4px;
+  border: 1px solid #eee;
+}
+.PriceControl p {
+  padding: 0;
+  font-size: 14px;
+  margin: 0;
+}
+.TLDs {
+  flex: 1;
+  padding-left: 5px;
+  /* background: #bbb; */
+  display: flex;
+  align-items: flex-start;
+  flex-flow: column;
+}
+
+.TLDInputCont,
+.PrefixInputCont {
+  /* background: gold; */
+  width: 100%;
+}
+
+b {
+  cursor: pointer;
+}
+.TLDInputCont input,
+.PrefixInputCont input {
+  margin-top: 20px;
+  width: 100%;
+  border: none;
+  outline: none;
+  border-bottom: 1px solid #eee;
+  margin-right: 2px;
+}
+.ListOfTlds {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.tld {
+  /* margin-top: 20px; */
+  padding: 7px;
+  border-radius: 5px;
+  color: white;
+  background: #333;
+  margin-right: 2px;
+}
+.tld span {
+  margin-right: 8px;
+}
+
+.DomainsListCont,
+.ListOfTlds,
+.PrefixListCont,
+.SuffixListCont {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+p {
+  text-align: left;
+}
+b.clear {
+  color: lightblue;
+}
+
+.Header {
+  text-align: left;
+  margin-top: 20px !important;
+}
+
+.GenerateCont {
+  margin-top: 20px;
+}
+.GenerateCont button {
+  padding: 15px;
+  width: 90%;
+  outline: none;
+  border: 1px solid #333;
+  background: #fff;
+  color: #444;
+  transition: 0.4s;
+  cursor: pointer;
+}
+.Right button {
+  border: none;
+  background: none;
+  outline: none;
+  border: 1px solid #333;
+  padding: 10px;
+  transition: 0.4s;
+  cursor: pointer;
+}
+.Right button:hover {
+  background: #333;
+  color: white;
+}
+.Right input {
+  padding: 10px;
+  width: 80%;
+  margin-bottom: 13px;
+  border: none;
+  border-bottom: 1px solid #bbb;
+}
+button:disabled {
+  background: #bbb;
+  color: white;
+  border: none;
+  cursor: not-allowed;
+}
+.GenerateCont button:hover {
+  background: #444;
+  color: #fff;
+}
+
+.TwoDomainsConts {
+  display: flex;
+  padding: 15px;
+}
+.FirstDomainsCont {
+  flex: 1;
+}
+.BulkForwardCont {
+  flex: 1;
+}
+.EnterForwardingDetails p {
+  text-align: center;
+  font-size: 25px;
+}

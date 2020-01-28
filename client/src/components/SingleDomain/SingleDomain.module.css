@@ -1,0 +1,73 @@
+.SingleDomain {
+  width: 80%;
+  margin: 10px auto;
+  padding: 10px;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 1px 0px 16px #eee;
+  border-top: 3px solid #333;
+  /* background: #000; */
+}
+
+.Name {
+  font-size: 20px;
+}
+.successForwarding {
+  background: #bbb;
+  width: 80%;
+  margin: auto;
+  padding: 4px;
+  font-size: 17px;
+  color: white;
+}
+
+.forwardCont {
+  width: 80%;
+  display: flex;
+  margin: auto;
+}
+.forwardCont input {
+  flex: 1;
+  padding: 6px;
+}
+.forwardCont button {
+  padding: 6px;
+}
+
+.Right button {
+  border: none;
+  background: none;
+  outline: none;
+  border: 1px solid #333;
+  padding: 10px;
+  transition: 0.4s;
+  cursor: pointer;
+}
+
+.Right button:hover {
+  background: #333;
+  color: #fff;
+}
+/* .atTop {
+  position: absolute;
+} */
+.Right button:disabled {
+  background: #bbb;
+  color: white;
+  border: none;
+}
+.atTop {
+  /* align-self: flex-start; */
+  position: absolute;
+  left: 5px;
+  font-size: 18px;
+  top: 0px;
+  background: red;
+  padding: 0px 5px;
+  box-shadow: 1px 0px 2px rgb(161, 7, 7);
+  cursor: pointer;
+  /* border-radius: 50%; */
+  color: white;
+}

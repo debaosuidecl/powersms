@@ -1,0 +1,53 @@
+.Layout {
+  /* display: flex; */
+}
+.snap {
+  font-size: 15px;
+  margin-right: 10px;
+  cursor: pointer;
+  /* flex: 3; */
+}
+.snap:hover {
+  color: blue;
+}
+
+.Header {
+  /* height: 30px; */
+  padding: 1px;
+  box-shadow: 1px 2px 14px #eee;
+  font-size: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+.settings {
+  font-family: arial;
+  margin-right: 30px;
+}
+.settings button {
+  padding: 10px;
+  outline: none;
+  border: none;
+  background: none;
+  border: 1px solid #444;
+  transition: 0.4s;
+}
+.settings button:hover {
+  color: white;
+  background: #444;
+  transition: 0.4s;
+  cursor: pointer;
+}
+.liveStatus {
+  padding: 0;
+  margin: 0;
+  /* flex: 1; */
+  /* font */
+  font-family: arial;
+  font-size: 15px;
+}
+.logo {
+  /* flex: 10; */
+  margin-left: 25px;
+}

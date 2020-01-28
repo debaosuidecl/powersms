@@ -1,0 +1,173 @@
+.CallerId {
+  /* padding-top: 50px; */
+  /* background: green; */
+  /* max-width: 500px; */
+  margin: 20px 0px;
+  display: flex;
+  justify-content: flex-start;
+}
+.OptionButton {
+  margin-bottom: 5px;
+}
+.PausedCont {
+  width: 100%;
+  flex: 1;
+  margin-bottom: 10px;
+}
+.rotate90 {
+  transform: rotateZ('180deg') !important;
+  transition: 1s;
+}
+.FileCont input {
+  opacity: 0;
+  position: absolute;
+}
+.FormBody {
+  border: 1px solid #eee;
+  transform: rotateY('180deg') !important;
+
+  transition: 1s;
+  margin-top: 20px;
+  width: 80%;
+  margin: 20px auto;
+  padding: 20px;
+}
+.filesCont {
+  display: flex;
+  flex-flow: column;
+}
+label {
+  cursor: pointer;
+}
+.PhoneAndMessage {
+  font-size: 17px;
+  display: flex;
+  align-items: center;
+}
+.PhoneAndMessage svg {
+  color: #bbb;
+  font-size: 35px;
+}
+.PhoneAndMessage p {
+  margin-right: 5px;
+}
+.loading {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  height: 100%;
+  position: fixed;
+  z-index: 100;
+  /* padding: 1px; */
+  /* box-shadow: 1px 2px 14px #eee; */
+  font-size: 40px;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+.loading p {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.Container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-flow: column;
+  margin: 20px;
+}
+
+.CallerId input[type='text'] {
+  padding: 10px;
+  border: none;
+  width: 100%;
+  border-bottom: 1px solid #eee;
+  outline: none;
+  /* width: 100%; */
+  transition: 0.3s;
+}
+.CallerId input[type='text']:focus {
+  border-bottom: 2px solid lightgreen;
+  transition: 0.3s;
+}
+.Submit {
+  padding: 15px 20px;
+  margin-bottom: 10px;
+  color: #222;
+  background: #fff;
+  border: 1px solid #222;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.OptionAddCont {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+.OptionAddCont p {
+  margin-right: 10px;
+}
+.OptionAddCont svg {
+  font-size: 20px;
+  cursor: pointer;
+}
+.withOrWithoutOne {
+  display: flex;
+  justify-content: space-between;
+}
+.Submit:hover {
+  transition: 0.3s;
+  background: #222;
+  color: #fff;
+}
+.SpeedControl {
+  max-width: 200px;
+}
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 25px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: 0.2s;
+  transition: opacity 0.2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  background: #222;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  background: #444;
+  cursor: pointer;
+}
+
+.sentCount {
+  font-size: 19px;
+  border: 1px solid #eee;
+  padding: 2px 14px;
+}
+.sentCount p {
+  margin: 0;
+}
+
+@media (min-width: 800px) {
+  .Container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-flow: row;
+  }
+}
