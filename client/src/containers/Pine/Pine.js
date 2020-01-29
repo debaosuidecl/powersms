@@ -15,7 +15,10 @@ class Pine extends Component {
     isStarted: false,
     speed: 10,
     response: false,
-    endpoint: GLOBAL.domainpine,
+    endpoint:
+      process.env.NODE_ENV === 'production'
+        ? 'wss://aone.powersms.land'
+        : GLOBAL.domainpine,
     sentCount: 0,
     loading: true,
     isDoneSending: false,
