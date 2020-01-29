@@ -37,7 +37,9 @@ class Pine extends Component {
   };
 
   componentWillUnmount() {
-    const socket = socketIOClient(this.state.endpoint);
+    const socket = socketIOClient(this.state.endpoint, {
+      transports: ['websocket']
+    });
     socket.disconnect();
   }
 
@@ -109,7 +111,9 @@ class Pine extends Component {
           noRouteCount
         });
         console.log('Once');
-        const socket = socketIOClient(this.state.endpoint);
+        const socket = socketIOClient(this.state.endpoint, {
+          transports: ['websocket']
+        });
         socket.connect();
         socket.on('DELIVRD', _ => {
           this.setState(prevState => {
@@ -325,7 +329,7 @@ class Pine extends Component {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-    // const socket = socketIOClient(this.state.endpoint);
+    // const socket = socketIOClient(this.state.endpoint, {transports: ['websocket']});
     // socket.emit('doNotContinueWithSend', true);
   };
   numberWithCommas = x => {
@@ -336,7 +340,9 @@ class Pine extends Component {
     this.setState({ file: event.target.files[0].name });
     const data = new FormData();
     data.append('file', event.target.files[0]);
-    const socket = socketIOClient(this.state.endpoint);
+    const socket = socketIOClient(this.state.endpoint, {
+      transports: ['websocket']
+    });
     this.setState({ loading: true });
     axios.post(`${GLOBAL.domainpine}/api/upload`, data).then(() => {
       this.setState({
@@ -349,7 +355,9 @@ class Pine extends Component {
 
   submitHandler = event => {
     event.preventDefault();
-    const socket = socketIOClient(this.state.endpoint);
+    const socket = socketIOClient(this.state.endpoint, {
+      transports: ['websocket']
+    });
     if (this.state.ani && this.state.file) {
       this.setState({ isStarted: true, error: null });
       socket.emit('setSpeed', this.state.speed);
@@ -365,7 +373,9 @@ class Pine extends Component {
   };
   resumeSending = () => {
     this.setState({ isStarted: true, isPaused: false, error: null });
-    const socket = socketIOClient(this.state.endpoint);
+    const socket = socketIOClient(this.state.endpoint, {
+      transports: ['websocket']
+    });
     socket.connect();
 
     socket.emit('start', {
@@ -376,7 +386,9 @@ class Pine extends Component {
   };
   pauseHandler = () => {
     console.log('pause me now!!!!!');
-    const socket = socketIOClient(this.state.endpoint);
+    const socket = socketIOClient(this.state.endpoint, {
+      transports: ['websocket']
+    });
 
     if (!this.state.isStarted) {
       return;
@@ -463,7 +475,9 @@ class Pine extends Component {
               max='100'
               onChange={e => {
                 this.setState({ speed: e.target.value });
-                const socket = socketIOClient(this.state.endpoint);
+                const socket = socketIOClient(this.state.endpoint, {
+                  transports: ['websocket']
+                });
                 socket.emit('setSpeed', e.target.value);
               }}
               value={this.state.speed}
@@ -606,7 +620,9 @@ class Pine extends Component {
             <button
               className={classes.Submit}
               onClick={() => {
-                const socket = socketIOClient(this.state.endpoint);
+                const socket = socketIOClient(this.state.endpoint, {
+                  transports: ['websocket']
+                });
                 socket.emit('kill', true);
               }}
             >
@@ -644,7 +660,9 @@ class Pine extends Component {
             <button
               className={classes.Submit}
               onClick={() => {
-                const socket = socketIOClient(this.state.endpoint);
+                const socket = socketIOClient(this.state.endpoint, {
+                  transports: ['websocket']
+                });
                 socket.emit('kill', true);
               }}
             >
