@@ -42,7 +42,7 @@ const PORT = 9090;
 //   return new Promise(resolve => setTimeout(resolve, ms));
 // }
 app.use(function(req, res, next) {
-  res.setHeader('Access-Control-Allow-Origin', '*'); // update to match the domain you will make the request from
+  res.setHeader('Access-Control-Allow-Origin', 'https://powersms.land'); // update to match the domain you will make the request from
   res.setHeader('Access-Control-Allow-Headers', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
   res.setHeader('Access-Control-Request-Headers', 'GET, PUT, POST, DELETE');
