@@ -329,7 +329,7 @@ io.on('connection', (socket, id) => {
   let newCsv;
   socket.on('start', async data => {
     let timeout;
-
+    DELAY = 1000
     const { filename, ani, withLeadingOne } = data;
     if (!ani) {
       return io.sockets.emit('stop', true);
