@@ -41,6 +41,39 @@ class Pine extends Component {
   }
 
   componentDidMount() {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      document.location.href = '/auth';
+    } else {
+      let config = {
+        headers: {
+          'x-auth-token': token
+        }
+      };
+      let url = `${GLOBAL.domainNameCheap}/api/auth/auto`;
+      axios
+        .get(url, config)
+        .then(response => {
+          // console.log(response.data);
+          //
+          const { email, _id, fullName } = response.data;
+          console.log(email, _id, fullName);
+        })
+
+        .catch(error => {
+          console.log(error);
+          document.location.href = '/auth';
+
+          console.log(error);
+          if (error.response.data.msg) {
+            // dispatch(authLogOut());
+            console.log(error.response.data.msg);
+            // dispatch(authFail(''));
+          }
+          // this.props.history.push('/auth');
+        });
+    }
     axios
       .get(`${GLOBAL.domainpineaccountthree}/api/checkForFileExistence`)
       .then(({ data }) => {

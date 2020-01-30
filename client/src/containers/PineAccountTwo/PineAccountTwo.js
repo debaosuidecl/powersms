@@ -44,6 +44,39 @@ class Pine extends Component {
 
   componentDidMount() {
     console.log(document.referrer, 'right here');
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      document.location.href = '/auth';
+    } else {
+      let config = {
+        headers: {
+          'x-auth-token': token
+        }
+      };
+      let url = `${GLOBAL.domainNameCheap}/api/auth/auto`;
+      axios
+        .get(url, config)
+        .then(response => {
+          // console.log(response.data);
+          //
+          const { email, _id, fullName } = response.data;
+          console.log(email, _id, fullName);
+        })
+
+        .catch(error => {
+          console.log(error);
+          document.location.href = '/auth';
+
+          console.log(error);
+          if (error.response.data.msg) {
+            // dispatch(authLogOut());
+            console.log(error.response.data.msg);
+            // dispatch(authFail(''));
+          }
+          // this.props.history.push('/auth');
+        });
+    }
     axios
       .get(`${GLOBAL.domainpineaccountone}/api/checkForFileExistence`)
       .then(({ data }) => {
@@ -502,7 +535,9 @@ class Pine extends Component {
                   onChange={this.onChangeHandler}
                   placeholder='Caller ID'
                 />
-                {this.state.files.length<= 0 ?<p>Input or drag and drop multiple files</p>: null}
+                {this.state.files.length <= 0 ? (
+                  <p>Input or drag and drop multiple files</p>
+                ) : null}
                 <div className=''>
                   {this.state.files.map((d, i) => (
                     <p key={i}>{d}</p>

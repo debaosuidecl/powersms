@@ -36,29 +36,6 @@ class Timeout {
 }
 app.use(cors());
 app.use(express.json());
-app.use(function(req, res, next) {
-  // Website you wish to allow to connect
-  res.setHeader('Access-Control-Allow-Origin', '*');
-
-  // Request methods you wish to allow
-  res.setHeader(
-    'Access-Control-Allow-Methods',
-    'GET, POST, OPTIONS, PUT, PATCH, DELETE'
-  );
-
-  // Request headers you wish to allow
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'X-Requested-With,content-type'
-  );
-
-  // Set to true if you need the website to include cookies in the requests sent
-  // to the API (e.g. in case you use sessions)
-  res.setHeader('Access-Control-Allow-Credentials', true);
-
-  // Pass to next layer of middleware
-  next();
-});
 
 const PORT = 9090;
 // function delay(ms) {
@@ -282,7 +259,7 @@ app.post('/api/upload', (req, res) => {
 let io = socket(server);
 global.SENDS_PER_SECOND = 10;
 global.NUMBER_OF_SENDS = 0;
-global.DELAY = 2000;
+global.DELAY = 1000;
 global.JSON_UNUSED = [];
 io.on('connection', (socket, id) => {
   // app.get('/api', (req, res) => {
@@ -423,40 +400,39 @@ io.on('connection', (socket, id) => {
                 if (err) throw err;
                 // saved!
                 NUMBER_OF_SENDS++;
+              });
+              new Timeout(17000).promise().then(resTimer => {
+                try {
+                  request(
+                    `http://163.172.233.88:8001?username=FreshData2way&password=c4c6bohm&messageId=${
+                      JSON.parse(body).message_id
+                    }&command=query`,
+                    function(errQuery, responseQuery, bodyQuery) {
+                      // console.log(bodyQuery, 'bodyquery');
+                      let status = JSON.parse(bodyQuery).status;
+                      io.sockets.emit(status);
+                      //this is a test
+                      // io.sockets.emit('DELIVRD');
+                      // io.sockets.emit('UNDELIV');
+                      //this is a test
 
-                new Timeout(18000).promise().then(resTimer => {
-                  try {
-                    request(
-                      `http://163.172.233.88:8001?username=FreshData2way&password=c4c6bohm&messageId=${
-                        JSON.parse(body).message_id
-                      }&command=query`,
-                      function(errQuery, responseQuery, bodyQuery) {
-                        // console.log(bodyQuery, 'bodyquery');
-                        let status = JSON.parse(bodyQuery).status;
-                        io.sockets.emit(status);
-                        //this is a test
-                        // io.sockets.emit('DELIVRD');
-                        // io.sockets.emit('UNDELIV');
-                        //this is a test
-
-                        Messages.findOneAndUpdate(
-                          { messageId: JSON.parse(body).message_id },
-                          { status },
-                          { new: true },
-                          (err, doc) => {
-                            if (err) {
-                              console.log(err);
-                            }
-                            clearTimeout(timeout);
+                      Messages.findOneAndUpdate(
+                        { messageId: JSON.parse(body).message_id },
+                        { status },
+                        { new: true },
+                        (err, doc) => {
+                          if (err) {
+                            console.log('err on update');
                           }
-                        );
-                      }
-                    );
-                  } catch (error) {
-                    // clearTimeout(resTimer.timeout);
-                    console.log(error, 'From second catch block');
-                  }
-                });
+                          clearTimeout(timeout);
+                        }
+                      );
+                    }
+                  );
+                } catch (error) {
+                  // clearTimeout(resTimer.timeout);
+                  console.log(error, 'From second catch block');
+                }
               });
             } catch (error) {
               console.log(error);

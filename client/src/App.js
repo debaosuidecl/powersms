@@ -16,34 +16,32 @@ import Auth from './containers/Auth/Auth';
 function App() {
   return (
     <div className='App'>
-      <BrowserRouter>
-        <Switch>
-          <Route path='/' exact={true} component={Home} />
-          {/* <Route path='/test' exact={true} component={Test} /> */}
-          <Route path='/pause-screen' exact={true} component={PauseScreen} />
-          <Route path='/mobiniti' exact={true} component={HomeDev} />
-          <Route path='/pineapple' exact={true} component={Pine} />
-          <Route path='/namecheap' exact={true} component={NamecheapForward} />
-          <Route
-            path='/freshdata-2way-2'
-            exact={true}
-            component={PineAccountTwo}
-          />
-          <Route
-            path='/freshdata-2way-3'
-            exact={true}
-            component={PineAccountThree}
-          />
-          <Route path='/snapshots-2way-1' exact={true} component={Snapshots} />
-          <Route path='/auth' exact={true} component={Auth} />
-          {/* <Route
+      <Switch>
+        <Route path='/' exact={true} component={Home} />
+        {/* <Route path='/test' exact={true} component={Test} /> */}
+        <Route path='/pause-screen' exact={true} component={PauseScreen} />
+        <Route path='/mobiniti' exact={true} component={HomeDev} />
+        <Route path='/pineapple' exact={true} component={Pine} />
+        <Route path='/namecheap' exact={true} component={NamecheapForward} />
+        <Route
+          path='/freshdata-2way-2'
+          exact={true}
+          component={PineAccountTwo}
+        />
+        <Route
+          path='/freshdata-2way-3'
+          exact={true}
+          component={PineAccountThree}
+        />
+        <Route path='/snapshots-2way-1' exact={true} component={Snapshots} />
+        <Route path='/auth' exact={true} component={Auth} />
+        {/* <Route
             path='/snapshot-freshdata'
             exact={true}
             component={PineAccountTwo}
           /> */}
-          {/* <Home /> */}
-        </Switch>
-      </BrowserRouter>
+        {/* <Home /> */}
+      </Switch>
     </div>
   );
 }

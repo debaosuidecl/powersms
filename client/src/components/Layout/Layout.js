@@ -24,7 +24,7 @@ export default function Layout({
             ? 'FreshData2Way Account 2'
             : accountThree
             ? 'FreshData2Way Account 3'
-            : 'Pineapple'}
+            : 'POWER-SMS'}
         </p>
         {
           <div className={classes.settings}>
@@ -51,6 +51,14 @@ export default function Layout({
                 <button onClick={goToOtherAccountFunc}>Go to account 2</button>
               </React.Fragment>
             ) : null}
+            <button
+              onClick={() => {
+                localStorage.removeItem('token');
+                document.location.href = '/auth';
+              }}
+            >
+              Logout
+            </button>
           </div>
         }
       </div>

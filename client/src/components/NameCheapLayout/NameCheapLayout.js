@@ -5,7 +5,7 @@ export default function Layout({ children }) {
   return (
     <div className={classes.Layout}>
       <div className={classes.Header}>
-        <p className={classes.logo}>FreshData NameCheap</p>
+        <p className={classes.logo}>POWER-SMS</p>
       </div>
 
       {children}

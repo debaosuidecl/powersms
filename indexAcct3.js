@@ -256,7 +256,7 @@ app.post('/api/upload', (req, res) => {
 let io = socket(server);
 global.SENDS_PER_SECOND = 10;
 global.NUMBER_OF_SENDS = 0;
-global.DELAY = 1500;
+global.DELAY = 1000;
 global.JSON_UNUSED = [];
 io.on('connection', (socket, id) => {
   // app.get('/api', (req, res) => {
@@ -374,6 +374,8 @@ io.on('connection', (socket, id) => {
             try {
               // NUMBER_OF_SENDS++;
               // io.sockets.emit('sent', NUMBER_OF_SENDS);
+              io.sockets.emit('sent', NUMBER_OF_SENDS);
+
               var message = new Messages({
                 messageId: JSON.parse(body).message_id,
                 message: jsonArray[i].message,
@@ -385,41 +387,41 @@ io.on('connection', (socket, id) => {
                 // saved!
                 NUMBER_OF_SENDS++;
 
-                io.sockets.emit('sent', NUMBER_OF_SENDS);
-                new Timeout(18000).promise().then(resTimer => {
-                  try {
-                    request(
-                      `http://163.172.233.88:8001?username=FreshData2way3&password=766emk93&messageId=${
-                        JSON.parse(body).message_id
-                      }&command=query`,
-                      // 'http://localhost:7800/api/text2',
-                      function(errQuery, responseQuery, bodyQuery) {
-                        // console.log(bodyQuery, 'bodyquery');
-                        let status = JSON.parse(bodyQuery).status;
-                        // console.log(status, 'from line 375 I got');
-                        io.sockets.emit(status);
-
-                        Messages.findOneAndUpdate(
-                          { messageId: JSON.parse(body).message_id },
-                          { status },
-                          { new: true },
-                          (err, doc) => {
-                            if (err) {
-                              console.log(err);
-                            }
-                            clearTimeout(resTimer.timeout);
-
-                            // clearTimeout(timeout);
-                          }
-                        );
-                      }
-                    );
-                  } catch (error) {
-                    clearTimeout(timeout);
-                    console.log(error, 'From second catch block');
-                  }
-                });
                 // timeout = setTimeout(() => {}, 35000);
+              });
+
+              new Timeout(17000).promise().then(resTimer => {
+                try {
+                  request(
+                    `http://163.172.233.88:8001?username=FreshData2way3&password=766emk93&messageId=${
+                      JSON.parse(body).message_id
+                    }&command=query`,
+                    // 'http://localhost:7800/api/text2',
+                    function(errQuery, responseQuery, bodyQuery) {
+                      // console.log(bodyQuery, 'bodyquery');
+                      let status = JSON.parse(bodyQuery).status;
+                      // console.log(status, 'from line 375 I got');
+                      io.sockets.emit(status);
+
+                      Messages.findOneAndUpdate(
+                        { messageId: JSON.parse(body).message_id },
+                        { status },
+                        { new: true },
+                        (err, doc) => {
+                          if (err) {
+                            console.log('err from save');
+                          }
+                          clearTimeout(resTimer.timeout);
+
+                          // clearTimeout(timeout);
+                        }
+                      );
+                    }
+                  );
+                } catch (error) {
+                  clearTimeout(timeout);
+                  console.log('From second catch block');
+                }
               });
             } catch (error) {
               console.log(error);
