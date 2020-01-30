@@ -46,7 +46,7 @@ app.use(function(req, res, next) {
   // res.setHeader("'Content-Type', 'application/json'");
   next();
 });
-app.use(cors());
+app.use(cors({ origin: '*' }));
 app.use(express.json());
 
 const PORT = 7802;

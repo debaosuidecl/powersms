@@ -21,7 +21,7 @@ let FileName = require('./models/FileName');
 let uuid = require('uuid');
 // console.log(uuid());
 // return;
-app.use(cors());
+app.use(cors({ origin: '*' }));
 app.use(function(req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', '*'); // update to match the domain you will make the request from
   res.setHeader('Access-Control-Allow-Headers', '*');
