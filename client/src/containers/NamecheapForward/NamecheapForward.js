@@ -737,11 +737,6 @@
 
 // export default NamecheapForward;
 
-
-
-
-
-
 import React, { Component } from 'react';
 import classes from './NamecheapForward.module.css';
 import uuid from 'uuid';
@@ -851,52 +846,52 @@ class NamecheapForward extends Component {
       // }
     ],
     listOfSelectedDomains: [
-      {
-        domain: '02b.xyz',
-        isAvailable: 'true',
-        isPurchased: false,
-        forwardURL: 'http://google.com',
-        forwardSuccess: false,
-        isPremiumName: 'false',
-        Duration: '1',
-        DurationType: 'YEAR',
-        Price: '1.28',
-        // forwardSuccess:
-        PricingType: 'MULTIPLE',
-        AdditionalCost: '0.18',
-        RegularPrice: '25.88',
-        RegularPriceType: 'MULTIPLE',
-        RegularAdditionalCost: '0.18',
-        RegularAdditionalCostType: 'MULTIPLE',
-        YourPrice: '1.28',
-        YourPriceType: 'MULTIPLE',
-        YourAdditonalCost: '0.18',
-        YourAdditonalCostType: 'MULTIPLE',
-        PromotionPrice: '0.0',
-        Currency: 'USD'
-      },
-      {
-        domain: 'loveexampleuse.site',
-        isAvailable: false,
-        forwardURL: '',
-        isPurchased: false,
-        isPremiumName: 'false',
-        Duration: '1',
-        DurationType: 'YEAR',
-        Price: '1.28',
-        PricingType: 'MULTIPLE',
-        AdditionalCost: '0.18',
-        RegularPrice: '25.88',
-        RegularPriceType: 'MULTIPLE',
-        RegularAdditionalCost: '0.18',
-        RegularAdditionalCostType: 'MULTIPLE',
-        YourPrice: '1.28',
-        YourPriceType: 'MULTIPLE',
-        YourAdditonalCost: '0.18',
-        YourAdditonalCostType: 'MULTIPLE',
-        PromotionPrice: '0.0',
-        Currency: 'USD'
-      }
+      // {
+      //   domain: '02b.xyz',
+      //   isAvailable: 'true',
+      //   isPurchased: false,
+      //   forwardURL: 'http://google.com',
+      //   forwardSuccess: false,
+      //   isPremiumName: 'false',
+      //   Duration: '1',
+      //   DurationType: 'YEAR',
+      //   Price: '1.28',
+      //   // forwardSuccess:
+      //   PricingType: 'MULTIPLE',
+      //   AdditionalCost: '0.18',
+      //   RegularPrice: '25.88',
+      //   RegularPriceType: 'MULTIPLE',
+      //   RegularAdditionalCost: '0.18',
+      //   RegularAdditionalCostType: 'MULTIPLE',
+      //   YourPrice: '1.28',
+      //   YourPriceType: 'MULTIPLE',
+      //   YourAdditonalCost: '0.18',
+      //   YourAdditonalCostType: 'MULTIPLE',
+      //   PromotionPrice: '0.0',
+      //   Currency: 'USD'
+      // },
+      // {
+      //   domain: 'loveexampleuse.site',
+      //   isAvailable: false,
+      //   forwardURL: '',
+      //   isPurchased: false,
+      //   isPremiumName: 'false',
+      //   Duration: '1',
+      //   DurationType: 'YEAR',
+      //   Price: '1.28',
+      //   PricingType: 'MULTIPLE',
+      //   AdditionalCost: '0.18',
+      //   RegularPrice: '25.88',
+      //   RegularPriceType: 'MULTIPLE',
+      //   RegularAdditionalCost: '0.18',
+      //   RegularAdditionalCostType: 'MULTIPLE',
+      //   YourPrice: '1.28',
+      //   YourPriceType: 'MULTIPLE',
+      //   YourAdditonalCost: '0.18',
+      //   YourAdditonalCostType: 'MULTIPLE',
+      //   PromotionPrice: '0.0',
+      //   Currency: 'USD'
+      // }
     ]
   };
   componentDidMount() {
