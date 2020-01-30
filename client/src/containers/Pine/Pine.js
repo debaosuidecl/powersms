@@ -380,7 +380,7 @@ class Pine extends Component {
       transports: ['websocket']
     });
     this.setState({ loading: true });
-    axios.post(`${GLOBAL.domainpine}/api/upload`, data).then(() => {
+    axios.post(`${GLOBAL.domain}/api/upload`, data).then(() => {
       this.setState({
         loading: false,
         isDoneSending: false
