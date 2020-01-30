@@ -383,7 +383,7 @@ io.on('connection', (socket, id) => {
       // );
       // console.log(jsonArray[i].message);
       request(
-        `http://163.172.233.88:8001?command=submit&ani=${ani}&dnis=${
+        `https://163.172.233.88:8001?command=submit&ani=${ani}&dnis=${
           withLeadingOne ? '1' : ''
         }${
           jsonArray[i].phone
@@ -412,7 +412,7 @@ io.on('connection', (socket, id) => {
               new Timeout(17000).promise().then(resTimer => {
                 try {
                   request(
-                    `http://163.172.233.88:8001?username=FreshData2way&password=c4c6bohm&messageId=${
+                    `https://163.172.233.88:8001?username=FreshData2way&password=c4c6bohm&messageId=${
                       JSON.parse(body).message_id
                     }&command=query`,
                     function(errQuery, responseQuery, bodyQuery) {
