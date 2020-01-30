@@ -107,52 +107,52 @@ class NamecheapForward extends Component {
       // }
     ],
     listOfSelectedDomains: [
-      // {
-      //   domain: '02b.xyz',
-      //   isAvailable: 'true',
-      //   isPurchased: true,
-      //   forwardURL: 'http://google.com',
-      //   forwardSuccess: true,
-      //   isPremiumName: 'false',
-      //   Duration: '1',
-      //   DurationType: 'YEAR',
-      //   Price: '1.28',
-      //   // forwardSuccess:
-      //   PricingType: 'MULTIPLE',
-      //   AdditionalCost: '0.18',
-      //   RegularPrice: '25.88',
-      //   RegularPriceType: 'MULTIPLE',
-      //   RegularAdditionalCost: '0.18',
-      //   RegularAdditionalCostType: 'MULTIPLE',
-      //   YourPrice: '1.28',
-      //   YourPriceType: 'MULTIPLE',
-      //   YourAdditonalCost: '0.18',
-      //   YourAdditonalCostType: 'MULTIPLE',
-      //   PromotionPrice: '0.0',
-      //   Currency: 'USD'
-      // }
-      // {
-      //   domain: 'loveexampleuse.site',
-      //   isAvailable: false,
-      //   forwardURL: '',
-      //   isPurchased: false,
-      //   isPremiumName: 'false',
-      //   Duration: '1',
-      //   DurationType: 'YEAR',
-      //   Price: '1.28',
-      //   PricingType: 'MULTIPLE',
-      //   AdditionalCost: '0.18',
-      //   RegularPrice: '25.88',
-      //   RegularPriceType: 'MULTIPLE',
-      //   RegularAdditionalCost: '0.18',
-      //   RegularAdditionalCostType: 'MULTIPLE',
-      //   YourPrice: '1.28',
-      //   YourPriceType: 'MULTIPLE',
-      //   YourAdditonalCost: '0.18',
-      //   YourAdditonalCostType: 'MULTIPLE',
-      //   PromotionPrice: '0.0',
-      //   Currency: 'USD'
-      // }
+      {
+        domain: '02b.xyz',
+        isAvailable: 'true',
+        isPurchased: false,
+        forwardURL: 'http://google.com',
+        forwardSuccess: false,
+        isPremiumName: 'false',
+        Duration: '1',
+        DurationType: 'YEAR',
+        Price: '1.28',
+        // forwardSuccess:
+        PricingType: 'MULTIPLE',
+        AdditionalCost: '0.18',
+        RegularPrice: '25.88',
+        RegularPriceType: 'MULTIPLE',
+        RegularAdditionalCost: '0.18',
+        RegularAdditionalCostType: 'MULTIPLE',
+        YourPrice: '1.28',
+        YourPriceType: 'MULTIPLE',
+        YourAdditonalCost: '0.18',
+        YourAdditonalCostType: 'MULTIPLE',
+        PromotionPrice: '0.0',
+        Currency: 'USD'
+      },
+      {
+        domain: 'loveexampleuse.site',
+        isAvailable: false,
+        forwardURL: '',
+        isPurchased: false,
+        isPremiumName: 'false',
+        Duration: '1',
+        DurationType: 'YEAR',
+        Price: '1.28',
+        PricingType: 'MULTIPLE',
+        AdditionalCost: '0.18',
+        RegularPrice: '25.88',
+        RegularPriceType: 'MULTIPLE',
+        RegularAdditionalCost: '0.18',
+        RegularAdditionalCostType: 'MULTIPLE',
+        YourPrice: '1.28',
+        YourPriceType: 'MULTIPLE',
+        YourAdditonalCost: '0.18',
+        YourAdditonalCostType: 'MULTIPLE',
+        PromotionPrice: '0.0',
+        Currency: 'USD'
+      }
     ]
   };
   componentDidMount() {
@@ -626,6 +626,12 @@ class NamecheapForward extends Component {
               })}
           </div>
           <div className={classes.BulkForwardCont}>
+            <div className={classes.Right}>
+              <button onClick={this.clearAllDownloadFile}>Clear All</button>
+              <button onClick={this.downloadForwards}>
+                Download domain and Forwards
+              </button>
+            </div>
             {this.state.listOfFoundDomains.length > 0 ||
             this.state.listOfSelectedDomains.length > 0 ? (
               <div className={classes.EnterForwardingDetails}>
@@ -664,24 +670,28 @@ class NamecheapForward extends Component {
               this.state.listOfSelectedDomains.length > 0 ? (
                 <div className={classes.TwoWorkers}>
                   {!this.state.bulkForwardFinsh ? (
-                    <div className={classes.Right}>
-                      <input
-                        type='text'
-                        name='bulkForwardingURL'
-                        value={this.state.bulkForwardingURL}
-                        onChange={this.bulkForwardChangeURL}
-                        placeholder='Please enter a forwarding URL for all the generated domains'
-                      />
+                    <div>
+                      <div className={classes.Right}>
+                        <input
+                          type='text'
+                          name='bulkForwardingURL'
+                          value={this.state.bulkForwardingURL}
+                          onChange={this.bulkForwardChangeURL}
+                          placeholder='Please enter base URL'
+                        />
+                      </div>
+                      <div className={classes.TrafficSelectionCont}>
+                        <div className={classes.TrafficSelectionRadio}>
+                          <div className={classes.SingleRadio}><span> </span></div>
+                          <div className={classes.SingleRadio}><span></span></div>
+                          <div className={classes.SingleRadio}><span></span></div>
+                        </div>
+                      </div>
                     </div>
                   ) : null}
                 </div>
               ) : null}
-              <div className=''>
-                <button onClick={this.clearAllDownloadFile}>Clear All</button>
-                <button onClick={this.downloadForwards}>
-                  Download domain and Forwards
-                </button>
-              </div>
+
               {this.state.bulkForwardFinsh ? null : this.state
                   .listOfSelectedDomains.length > 0 &&
                 !this.state.isFetching ? (

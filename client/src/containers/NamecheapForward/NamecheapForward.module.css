@@ -180,3 +180,15 @@ button:disabled {
   text-align: center;
   font-size: 25px;
 }
+.TrafficSelectionRadio {
+  margin: 20px auto;
+}
+.SingleRadio {
+  margin: 15px 0px;
+  text-align: left;
+}
+.SingleRadio span {
+  padding: 3px 7px;
+  border-radius: 50%;
+  background: #eee;
+}
