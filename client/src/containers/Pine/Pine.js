@@ -559,8 +559,8 @@ class Pine extends Component {
             {this.state.isDoneSending ? <p>Sending Complete</p> : null}
             <p>{this.numberWithCommas(this.state.sentCount)} sends</p>
           </div>
-          <div className={classes.sentCount}>
-            {/* {this.state.isDoneSending ? <p>Sending Complete</p> : null} */}
+          {/* <div className={classes.sentCount}>
+          
             {this.state.isStarted ? (
               <p>
                 {this.numberWithCommas(
@@ -569,7 +569,7 @@ class Pine extends Component {
                 sends left
               </p>
             ) : null}
-          </div>
+          </div> */}
           <div className={classes.sentCount}>
             <p>
               {this.numberWithCommas(this.state.deliveredCount)} D{' '}
