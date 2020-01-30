@@ -393,6 +393,7 @@ io.on('connection', (socket, id) => {
         // `http://localhost:7000/api/text`,
         function(error, response, body) {
           // console.log(body);
+          console.log(body, response, error, '396');
           if (body !== 'NO ROUTES') {
             try {
               // NUMBER_OF_SENDS++;
