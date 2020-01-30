@@ -42,10 +42,10 @@ const PORT = 9090;
 //   return new Promise(resolve => setTimeout(resolve, ms));
 // }
 app.use(function(req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*'); // update to match the domain you will make the request from
-  res.header('Access-Control-Allow-Headers', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
-  res.header('Access-Control-Request-Headers', 'GET, PUT, POST, DELETE');
+  res.setHeader('Access-Control-Allow-Origin', '*'); // update to match the domain you will make the request from
+  res.setHeader('Access-Control-Allow-Headers', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
+  res.setHeader('Access-Control-Request-Headers', 'GET, PUT, POST, DELETE');
 
   // res.setHeader("'Content-Type', 'application/json'");
   next();

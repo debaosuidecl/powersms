@@ -22,6 +22,15 @@ let uuid = require('uuid');
 // console.log(uuid());
 // return;
 app.use(cors());
+app.use(function(req, res, next) {
+  res.setHeader('Access-Control-Allow-Origin', '*'); // update to match the domain you will make the request from
+  res.setHeader('Access-Control-Allow-Headers', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
+  res.setHeader('Access-Control-Request-Headers', 'GET, PUT, POST, DELETE');
+
+  // res.setHeader("'Content-Type', 'application/json'");
+  next();
+});
 const PORT = 7000;
 function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
