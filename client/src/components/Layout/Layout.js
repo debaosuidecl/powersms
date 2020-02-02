@@ -1,6 +1,8 @@
 import React from 'react';
 import classes from './Layout.module.css';
 // import {router} from "react-router-dom"
+import Logo from './color.png';
+
 export default function Layout({
   children,
   mobiniti,
@@ -16,7 +18,7 @@ export default function Layout({
     <div className={classes.Layout}>
       <div className={classes.Header}>
         <p className={classes.logo}>
-          {mobiniti
+          {/* {mobiniti
             ? 'FDN - Mobiniti'
             : accountOne
             ? 'FreshData2Way Account 1'
@@ -24,7 +26,8 @@ export default function Layout({
             ? 'FreshData2Way Account 2'
             : accountThree
             ? 'FreshData2Way Account 3'
-            : 'POWER-SMS'}
+            : 'POWER-SMS'} */}
+          <img width='300px' src={Logo} />
         </p>
         {
           <div className={classes.settings}>
