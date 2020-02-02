@@ -33,7 +33,7 @@ let Layout = ({
             : 'POWER-SMS'} */}
           <img
             onLoad={() => setFlip(true)}
-            onClick={() => history.push('/')}
+            onClick={() => (window.location.href = '/')}
             width='200px'
             style={{
               transition: '.5s',
