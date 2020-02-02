@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import NameCheapLayout from '../../components/NameCheapLayout/NameCheapLayout';
+import Layout from '../../components/Layout/Layout';
 import classes from './Auth.module.css';
 import axios from 'axios';
 import GLOBAL from '../GLOBAL/GLOBAL';
@@ -8,7 +8,7 @@ import { withRouter } from 'react-router-dom';
 import { authSuccess } from '../../store/actions/auth';
 class Auth extends Component {
   state = {
-    email: 'hello@freshdatanow.com',
+    email: '',
     password: '',
     errors: []
   };
@@ -44,9 +44,9 @@ class Auth extends Component {
   render() {
     console.log(this.props.isAuthenticated);
     return (
-      <NameCheapLayout>
+      <Layout isAuthPage>
         {this.props.isAuthenticated ? (
-          <span style={{ color: 'white' }}>
+          <span style={{ color: 'white', position: 'absolute' }}>
             }{(document.location.href = '/')}
           </span>
         ) : (
@@ -96,7 +96,7 @@ class Auth extends Component {
             <button onClick={this.submitHandler}>Sign in</button>
           </div>
         </div>
-      </NameCheapLayout>
+      </Layout>
     );
   }
 }

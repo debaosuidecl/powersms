@@ -1,5 +1,6 @@
 import * as actionTypes from './actionTypes';
 import axios from 'axios';
+import GLOBAL from '../../containers/GLOBAL/GLOBAL';
 // import App from '../../App';
 
 export const authStart = () => {
@@ -183,35 +184,41 @@ export const authExpires = expirationTime => {
 //   };
 // };
 
-// export const authCheckState = () => {
-//   return dispatch => {
-//     dispatch(authCheckStart());
-//     const token = localStorage.getItem('token');
-//     if (!token) {
-//       dispatch(authLogOut());
-//       dispatch(authFail(''));
-//     } else {
-//       let config = {
-//         headers: {
-//           'x-auth-token': token
-//         }
-//       };
-//       let url = `${App.domain}api/userauth/`;
-//       axios
-//         .get(url, config)
-//         .then(response => {
-//           const { email, _id, fullName, avatar } = response.data;
-//           // console.log(response.data);
-//           dispatch(authSuccess(token, _id, fullName, email, avatar));
-//         })
+export const authCheckState = () => {
+  return dispatch => {
+    dispatch(authCheckStart());
+    setTimeout(() => {
+      console.log('I am starting');
+      const token = localStorage.getItem('token');
+      if (!token) {
+        dispatch(authLogOut());
+        dispatch(authFail(''));
+      } else {
+        let config = {
+          headers: {
+            'x-auth-token': token
+          }
+        };
+        let url = `${GLOBAL.domainNameCheap}/api/auth/auto`;
+        axios
+          .get(url, config)
+          .then(response => {
+            const { _id, fullName } = response.data;
+            console.log(response.data);
+            setTimeout(() => {
+              dispatch(authSuccess(token, _id, fullName));
+            }, 1000);
+          })
 
-//         .catch(error => {
-//           if (error.response && error.response.data.msg) {
-//             dispatch(authLogOut());
+          .catch(error => {
+            console.log(error, 'error');
+            if (error.response && error.response.data.msg) {
+              dispatch(authLogOut());
 
-//             dispatch(authFail(''));
-//           }
-//         });
-//     }
-//   };
-// };
+              dispatch(authFail(''));
+            }
+          });
+      }
+    }, 2000);
+  };
+};

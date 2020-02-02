@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import socketIOClient from 'socket.io-client';
 import axios from 'axios';
-import classes from './Home.module.css';
+import classes from './PineappleHome.module.css';
 import GLOBAL from '../GLOBAL/GLOBAL';
 import Layout from '../../components/Layout/Layout';
 import Spinner from '../../components/Spinner/Spinner';
@@ -13,20 +13,16 @@ class Home extends Component {
     fullName: '',
     pages: [
       {
-        name: 'Pineapple',
-        link: '/pineapple-home'
+        name: 'Fresh data 2way Account 1',
+        link: '/pineapple'
       },
       {
-        name: 'D7',
-        link: '/'
+        name: 'Fresh data 2way Account 2',
+        link: '/freshdata-2way-2'
       },
       {
-        name: 'Twilio',
-        link: '/'
-      },
-      {
-        name: 'Signalwire',
-        link: '/'
+        name: 'Fresh data 2way Account 3',
+        link: '/freshdata-2way-3'
       },
       {
         name: 'Buy Domain and Forward domains with the Namecheap API',
@@ -44,43 +40,7 @@ class Home extends Component {
     // socket.disconnect();
   }
 
-  componentDidMount() {
-    const token = localStorage.getItem('token');
-
-    if (!token) {
-      document.location.href = '/auth';
-    } else {
-      let config = {
-        headers: {
-          'x-auth-token': token
-        }
-      };
-      let url = `${GLOBAL.domainNameCheap}/api/auth/auto`;
-      axios
-        .get(url, config)
-        .then(response => {
-          // console.log(response.data);
-          //
-          const { email, _id, fullName } = response.data;
-          console.log(email, _id, fullName);
-          this.setState({ fullName });
-        })
-
-        .catch(error => {
-          console.log(error);
-          // document.location.href = '/auth';
-
-          console.log(error);
-          if (error.response.data.msg) {
-            // dispatch(authLogOut());
-            console.log(error.response.data.msg);
-            // dispatch(authFail(''));
-          }
-          // this.props.history.push('/auth');
-          window.location.href = '/auth';
-        });
-    }
-  }
+  componentDidMount() {}
 
   render() {
     return (
@@ -88,15 +48,12 @@ class Home extends Component {
         <div className={classes.Home}>
           <div className={classes.UserDetails}>
             {/* <p>Hi {this.state.fullName.split(' ')[0]}!</p> */}
-            <p>Select Service Integration</p>
           </div>
           <div className={classes.Pages}>
             {this.state.pages.map(p => {
               return (
                 <div key={p.name} className={classes.page}>
-                  <p onClick={() => this.props.history.push(p.link)}>
-                    {p.name}
-                  </p>
+                  <p onClick={() => window.open(p.link, '_blank')}>{p.name}</p>
                 </div>
               );
             })}

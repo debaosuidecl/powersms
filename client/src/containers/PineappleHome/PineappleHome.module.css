@@ -1,0 +1,20 @@
+.page {
+  width: 80%;
+  margin: 20px auto;
+}
+
+.page p {
+  padding: 20px;
+  cursor: pointer;
+  border: 1px solid #eee;
+}
+
+.page p:hover {
+  box-shadow: 1px 0 14px #eee;
+}
+
+.UserDetails {
+  margin: 20px auto;
+  width: 80%;
+  font-size: 20px;
+}

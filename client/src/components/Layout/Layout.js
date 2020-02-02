@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import classes from './Layout.module.css';
 // import {router} from "react-router-dom"
 import Logo from './color.png';
-
-export default function Layout({
+import { withRouter } from 'react-router';
+import { connect } from 'react-redux';
+let Layout = ({
   children,
   mobiniti,
   accountOne,
@@ -12,8 +13,11 @@ export default function Layout({
   autoRotateClickFunction,
   goToAccountFunc,
   goToOtherAccountFunc,
-  accountThree
-}) {
+  accountThree,
+  history,
+  isAuthPage
+}) => {
+  const [isFlip, setFlip] = useState(true);
   return (
     <div className={classes.Layout}>
       <div className={classes.Header}>
@@ -27,7 +31,16 @@ export default function Layout({
             : accountThree
             ? 'FreshData2Way Account 3'
             : 'POWER-SMS'} */}
-          <img width='300px' src={Logo} />
+          <img
+            onLoad={() => setFlip(true)}
+            onClick={() => history.push('/')}
+            width='200px'
+            style={{
+              transition: '.5s',
+              transform: isFlip ? 'rotateX(0deg)' : 'rotateX(90deg)'
+            }}
+            src={Logo}
+          />
         </p>
         {
           <div className={classes.settings}>
@@ -54,19 +67,30 @@ export default function Layout({
                 <button onClick={goToOtherAccountFunc}>Go to account 2</button>
               </React.Fragment>
             ) : null}
-            <button
-              onClick={() => {
-                localStorage.removeItem('token');
-                document.location.href = '/auth';
-              }}
-            >
-              Logout
-            </button>
+            {!isAuthPage ? (
+              <button
+                onClick={() => {
+                  localStorage.removeItem('token');
+                  document.location.href = '/auth';
+                }}
+              >
+                Logout
+              </button>
+            ) : null}
           </div>
         }
       </div>
 
       {children}
+      {/* <div className={classes.footer}>
+        
+      </div> */}
     </div>
   );
-}
+};
+const mstp = state => {
+  return {
+    isAuthenticated: state.auth.token !== null
+  };
+};
+export default connect(mstp)(withRouter(Layout));

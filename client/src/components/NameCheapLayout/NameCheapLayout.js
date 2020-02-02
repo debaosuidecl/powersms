@@ -7,7 +7,7 @@ export default function Layout({ children }) {
     <div className={classes.Layout}>
       <div className={classes.Header}>
         <p className={classes.logo}>
-          <img width='300px' src={Logo} />
+          <img width='200px' src={Logo} />
         </p>
       </div>
 
