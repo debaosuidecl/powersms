@@ -13,6 +13,11 @@ class GLOBAL extends Component {
     process.env.NODE_ENV === 'production'
       ? 'https://aone.powersms.land'
       : 'http://localhost:9090';
+  //
+  static blacklist =
+    process.env.NODE_ENV === 'production'
+      ? 'https://blacklist.powersms.land'
+      : 'http://localhost:8024';
   static domainNameCheap =
     process.env.NODE_ENV === 'production'
       ? 'https://namecheap.powersms.land'

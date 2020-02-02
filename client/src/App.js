@@ -9,6 +9,7 @@ import Pine from './containers/Pine/Pine';
 import PineAccountTwo from './containers/PineAccountTwo/PineAccountTwo';
 import Snapshots from './containers/Snapshots/Snapshots';
 import NamecheapForward from './containers/NamecheapForward/NamecheapForward';
+import BLA from './containers/BLA/BLA';
 import PineAccountThree from './containers/PineAccountThree/PineAccountThree';
 import Auth from './containers/Auth/Auth';
 // import Test from './containers/Test/Test';
@@ -23,6 +24,7 @@ function App() {
         <Route path='/mobiniti' exact={true} component={HomeDev} />
         <Route path='/pineapple' exact={true} component={Pine} />
         <Route path='/namecheap' exact={true} component={NamecheapForward} />
+        <Route path='/blacklist' exact={true} component={BLA} />
         <Route
           path='/freshdata-2way-2'
           exact={true}

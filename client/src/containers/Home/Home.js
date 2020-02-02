@@ -27,6 +27,10 @@ class Home extends Component {
       {
         name: 'Buy Domain and Forward domains with the Namecheap API',
         link: '/namecheap'
+      },
+      {
+        name: 'Scrub for mobiles with the Blacklist API',
+        link: '/blacklist'
       }
     ]
   };
