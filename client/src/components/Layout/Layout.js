@@ -36,8 +36,8 @@ let Layout = ({
             onClick={() => (window.location.href = '/')}
             width='200px'
             style={{
-              transition: '.5s',
-              transform: isFlip ? 'rotateX(0deg)' : 'rotateX(90deg)'
+              transition: '.5s'
+              // transform: isFlip ? 'rotateX(0deg)' : 'rotateX(90deg)'
             }}
             src={Logo}
           />

@@ -14,6 +14,7 @@ import BLA from './containers/BLA/BLA';
 import PineAccountThree from './containers/PineAccountThree/PineAccountThree';
 import Auth from './containers/Auth/Auth';
 import PineappleHome from './containers/PineappleHome/PineappleHome';
+import D7 from './containers/D7/D7';
 import { authCheckState } from './store/actions/auth';
 // import Test from './containers/Test/Test';
 import LoadingPage from './components/LoadingPage/LoadingPage';
@@ -31,6 +32,8 @@ class App extends Component {
           <Route path='/pause-screen' exact={true} component={PauseScreen} />
           <Route path='/mobiniti' exact={true} component={HomeDev} />
           <Route path='/pineapple' exact={true} component={Pine} />
+          <Route path='/d7' exact={true} component={D7} />
+
           <Route
             path='/pineapple-home'
             exact={true}
