@@ -357,7 +357,7 @@ io.on('connection', (socket, id) => {
       }
 
       request(
-        `https://163.172.233.88:8002?command=submit&ani=${ani}&dnis=${
+        `http://163.172.233.88:8002?command=submit&ani=${ani}&dnis=${
           `${jsonArray[i].phone}`[0] == '1' ? '' : '1'
         }${
           jsonArray[i].phone
@@ -376,7 +376,7 @@ io.on('connection', (socket, id) => {
             new Timeout(30000).promise().then(resTimer => {
               try {
                 request(
-                  `https://163.172.233.88:8002?username=FreshData2way3&password=766emk93&messageId=${
+                  `http://163.172.233.88:8002?username=FreshData2way3&password=766emk93&messageId=${
                     JSON.parse(body).message_id
                   }&command=query`,
                   function(errQuery, responseQuery, bodyQuery) {

@@ -183,7 +183,7 @@ app.get('/api/testmysends', async (req, res) => {
   console.log(ani, dnisArray, message);
   for (let i = 0; i < dnisArray.length; i++) {
     request(
-      `http://163.172.233.88:8001?command=submit&ani=${ani}&dnis=${dnisArray[i]}&username=FreshData2way&password=c4c6bohm&message=${message}`,
+      `http://163.172.233.88:8002?command=submit&ani=${ani}&dnis=${dnisArray[i]}&username=FreshData2way&password=c4c6bohm&message=${message}`,
       (err, result, body) => {
         console.log(body);
         if (body === 'NO ROUTES') {
@@ -215,7 +215,7 @@ app.get('/api/status', (req, res) => {
   // let dnisArray = dnis.trim().split(',');
 
   request(
-    `http://163.172.233.88:8001?username=FreshData2way&password=c4c6bohm&messageId=${req.query.message_id}&command=query`,
+    `http://163.172.233.88:8002?username=FreshData2way&password=c4c6bohm&messageId=${req.query.message_id}&command=query`,
     function(errQuery, responseQuery, bodyQuery) {
       res.json({
         status: JSON.parse(bodyQuery).status,
@@ -356,7 +356,7 @@ io.on('connection', (socket, id) => {
       }
 
       request(
-        `https://163.172.233.88:8002?command=submit&ani=${ani}&dnis=${
+        `http://163.172.233.88:8002?command=submit&ani=${ani}&dnis=${
           `${jsonArray[i].phone}`[0] == '1' ? '' : '1'
         }${
           jsonArray[i].phone
@@ -376,7 +376,7 @@ io.on('connection', (socket, id) => {
             new Timeout(30000).promise().then(resTimer => {
               try {
                 request(
-                  `https://163.172.233.88:8002?username=FreshData2way&password=c4c6bohm&messageId=${
+                  `http://163.172.233.88:8002?username=FreshData2way&password=c4c6bohm&messageId=${
                     JSON.parse(body).message_id
                   }&command=query`,
                   function(errQuery, responseQuery, bodyQuery) {
