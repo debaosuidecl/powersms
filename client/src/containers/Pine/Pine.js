@@ -10,7 +10,7 @@ import { FontAwesomeIcon as F } from '@fortawesome/react-fontawesome';
 import { faCheck, faThumbsDown } from '@fortawesome/free-solid-svg-icons';
 class Pine extends Component {
   state = {
-    ani: '',
+    ani: '1234567890',
     file: null,
     isStarted: false,
     speed: 10,
@@ -36,13 +36,16 @@ class Pine extends Component {
     expiredCount: 0,
     deletedCount: 0,
     acceptedCount: 0,
+    socket: socketIOClient(
+      process.env.NODE_ENV === 'production'
+        ? 'https://aone.powersms.land'
+        : GLOBAL.domainpine
+    ),
     withLeadingOne: true
   };
 
   componentWillUnmount() {
-    const socket = socketIOClient(this.state.endpoint, {
-      transports: ['websocket']
-    });
+    const { socket } = this.state;
     socket.disconnect();
   }
 
@@ -80,77 +83,56 @@ class Pine extends Component {
           // this.props.history.push('/auth');
         });
     }
+    let isPause = localStorage.getItem('pauseAcct1');
+    let sendingFileName = localStorage.getItem('isSendingAcct1');
+    let totalNumberState = localStorage.getItem('totalNumberAcct1');
+
+    if (isPause === '1') {
+      // if the local storage state is on pause
+      this.setState({ isPaused: true });
+    }
+    if (sendingFileName) {
+      this.setState({ file: sendingFileName, isStarted: true });
+    }
+    if (totalNumberState) {
+      this.setState({ totalCount: totalNumberState });
+    }
     axios
       .get(`${GLOBAL.domainpine}/api/checkForFileExistence`)
       .then(({ data }) => {
+        console.log(data);
         if (data.exists) {
           this.setState({ downloadableCSV: data.exists });
         }
-        console.log(data);
-
         const {
           deliveredCount,
           unDeliveredCount,
           rejectedCount,
-          unknownCount,
           enrouteCount,
           sentStatus,
-          expiredCount,
-          deletedCount,
-          acceptedCount,
-          messageCount,
-          noRouteCount
+          speed,
+
+          messageCount
+          // noRouteCount
         } = data;
-        if (data._doc.isPause) {
-          this.setState({
-            isPaused: true,
-            loading: false
-          });
-        }
-        if (data._doc.isSending) {
-          this.setState({
-            isStarted: true,
-            file: data._doc.displayName
-          });
-        }
-        if (data._doc.phoneNumberSending) {
-          this.setState({
-            ani: data._doc.phoneNumberSending
-          });
-        }
-        if (data._doc.totalCount) {
-          this.setState({
-            totalCount: data._doc.totalCount
-          });
-        }
-        if (data._doc.withLeadingOne) {
-          this.setState({
-            withLeadingOne: data._doc.withLeadingOne
-          });
-        } else {
-          this.setState({
-            withLeadingOne: false
-          });
-        }
+
         this.setState({
           deliveredCount,
           unDeliveredCount,
           rejectedCount,
           enrouteCount,
-          unknownCount,
+          speed,
           sentStatus,
-          expiredCount,
-          deletedCount,
-          acceptedCount,
           sentCount: messageCount,
-          loading: false,
-          noRouteCount
+          loading: false
         });
         console.log('Once');
-        const socket = socketIOClient(this.state.endpoint, {
-          transports: ['websocket']
-        });
+        const { socket } = this.state;
         socket.connect();
+        socket.on('totalNumber', totalNumber => {
+          this.setState({ totalCount: totalNumber });
+          localStorage.setItem('totalNumberAcct1', totalNumber);
+        });
         socket.on('DELIVRD', _ => {
           this.setState(prevState => {
             return {
@@ -179,14 +161,6 @@ class Pine extends Component {
             };
           });
         });
-        socket.on('UNKNOWN', _ => {
-          console.log('unknown');
-          this.setState(prevState => {
-            return {
-              unknownCount: prevState.unknownCount + 1
-            };
-          });
-        });
         socket.on('ENROUTE', _ => {
           // console.log('unknown');
           this.setState(prevState => {
@@ -202,33 +176,6 @@ class Pine extends Component {
               sentStatus: prevState.sentStatus + 1
             };
           });
-        });
-        socket.on('EXPIRED', _ => {
-          // console.log('unknown');
-          this.setState(prevState => {
-            return {
-              expiredCount: prevState.expiredCount + 1
-            };
-          });
-        });
-        socket.on('DELETED', _ => {
-          // console.log('unknown');
-          this.setState(prevState => {
-            return {
-              deletedCount: prevState.deletedCount + 1
-            };
-          });
-        });
-        socket.on('ACCEPTD', _ => {
-          // console.log('unknown');
-          this.setState(prevState => {
-            return {
-              acceptedCount: prevState.acceptedCount + 1
-            };
-          });
-        });
-        socket.on('totalNumber', data => {
-          this.setState({ totalCount: data });
         });
 
         socket.on('stop', data => {
@@ -247,6 +194,7 @@ class Pine extends Component {
             isDoneSending: true,
             file: null
           });
+          localStorage.removeItem('isSendingAcct1');
         });
         socket.on('sent', data => {
           this.setState({
@@ -254,6 +202,7 @@ class Pine extends Component {
           });
         });
         socket.on('pauseDone', data => {
+          localStorage.setItem('pauseAcct1', '1');
           this.setState({
             isPaused: true,
             downloadableCSV: data,
@@ -268,12 +217,17 @@ class Pine extends Component {
             isDoneSending: false,
             file: null
           });
+          localStorage.removeItem('isSendingAcct1');
+          localStorage.removeItem('pauseAcct1');
+          localStorage.removeItem('totalNumberAcct1');
           // socket.disconnect();
         });
       });
   }
 
   clearCountHandler = () => {
+    localStorage.removeItem('totalNumberAcct1');
+
     const {
       sentCount,
       deliveredCount,
@@ -376,11 +330,9 @@ class Pine extends Component {
     this.setState({ file: event.target.files[0].name });
     const data = new FormData();
     data.append('file', event.target.files[0]);
-    const socket = socketIOClient(this.state.endpoint, {
-      transports: ['websocket']
-    });
+    const { socket } = this.state;
     this.setState({ loading: true });
-    axios.post(`${GLOBAL.domain}/api/upload`, data).then(() => {
+    axios.post(`${GLOBAL.domainpine}/api/upload`, data).then(() => {
       this.setState({
         loading: false,
         isDoneSending: false
@@ -391,9 +343,7 @@ class Pine extends Component {
 
   submitHandler = event => {
     event.preventDefault();
-    const socket = socketIOClient(this.state.endpoint, {
-      transports: ['websocket']
-    });
+    const { socket } = this.state;
     if (this.state.ani && this.state.file) {
       this.setState({ isStarted: true, error: null });
       socket.emit('setSpeed', this.state.speed);
@@ -403,15 +353,15 @@ class Pine extends Component {
         filename: this.state.file,
         ani: this.state.ani
       });
+      localStorage.setItem('isSendingAcct1', this.state.file);
+      localStorage.removeItem('pauseAcct1');
     } else {
       this.setState({ error: 'Enter SenderID and file before sending' });
     }
   };
   resumeSending = () => {
     this.setState({ isStarted: true, isPaused: false, error: null });
-    const socket = socketIOClient(this.state.endpoint, {
-      transports: ['websocket']
-    });
+    const { socket } = this.state;
     socket.connect();
 
     socket.emit('start', {
@@ -419,12 +369,12 @@ class Pine extends Component {
       withLeadingOne: this.state.withLeadingOne,
       ani: this.state.ani
     });
+    localStorage.setItem('isSendingAcct1', this.state.file);
+    localStorage.removeItem('pauseAcct1');
   };
   pauseHandler = () => {
     console.log('pause me now!!!!!');
-    const socket = socketIOClient(this.state.endpoint, {
-      transports: ['websocket']
-    });
+    const { socket } = this.state;
 
     if (!this.state.isStarted) {
       return;
@@ -474,35 +424,6 @@ class Pine extends Component {
               />
             )}
           </div>
-          <div className={classes.withOrWithoutOne}>
-            <div
-              onClick={() => this.setState({ withLeadingOne: true })}
-              className={classes.OptionAddCont}
-            >
-              <p>Input phone numbers without a leading 1</p>{' '}
-              <F
-                icon={faCheck}
-                color={this.state.withLeadingOne ? 'lightgreen' : '#eee'}
-              />
-            </div>
-            <div
-              onClick={() =>
-                this.setState({
-                  withLeadingOne: false
-                })
-              }
-              className={classes.OptionAddCont}
-            >
-              <p>Input phone numbers with a leading 1</p>{' '}
-              <F
-                icon={faCheck}
-                color={
-                  this.state.withLeadingOne === false ? 'lightgreen' : '#eee'
-                }
-              />
-            </div>
-          </div>
-
           <div className={classes.SpeedControl}>
             <p>Select Prefered speed from the slider</p>
             <input
@@ -511,9 +432,7 @@ class Pine extends Component {
               max='100'
               onChange={e => {
                 this.setState({ speed: e.target.value });
-                const socket = socketIOClient(this.state.endpoint, {
-                  transports: ['websocket']
-                });
+                const { socket } = this.state;
                 socket.emit('setSpeed', e.target.value);
               }}
               value={this.state.speed}
@@ -558,6 +477,11 @@ class Pine extends Component {
           <div className={classes.sentCount}>
             {this.state.isDoneSending ? <p>Sending Complete</p> : null}
             <p>{this.numberWithCommas(this.state.sentCount)} sends</p>
+          </div>
+          <div className={classes.sentCount}>
+            {this.state.isStarted && this.state.sentCount > 0 ? (
+              <p>{this.numberWithCommas(this.state.totalCount)} sends left</p>
+            ) : null}
           </div>
           {/* <div className={classes.sentCount}>
           

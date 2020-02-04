@@ -1,8 +1,6 @@
 const express = require('express');
 const app = express();
 require('dotenv').config();
-// const PhoneFDN2Way1 = require('./models/PhoneFDN2Way1');
-// let moment = require('moment');
 const path = require('path');
 let socket = require('socket.io');
 const connectDB = require('./config/db.js');
@@ -13,14 +11,17 @@ let csvtojson = require('csvtojson');
 let fs = require('fs');
 let fsExtra = require('fs-extra');
 let csv = require('csv-parser');
-let Messages = require('./models/MessagesAccountThree');
-let MessageCounts = require('./models/MessageCountsAccountThree');
+let Messages = require('./models/Messages');
+let MessageCounts = require('./models/MessageCounts');
 const { Parser } = require('json2csv');
+const convertJsonToCsv = require('convert-json-to-csv');
 
-let FileName = require('./models/FileNameAccountThree');
+let FileName = require('./models/FileName');
 // let sendFunctions = require('./sendFunctions/sendFunctions');
-//
-
+// let
+let uuid = require('uuid');
+// console.log(uuid());
+// return;
 class Timeout {
   constructor(ms) {
     this.ms = ms;
@@ -34,9 +35,13 @@ class Timeout {
     });
   }
 }
-let uuid = require('uuid');
-// console.log(uuid());
-// return;
+app.use(cors({ origin: '*' }));
+app.use(express.json());
+
+const PORT = 7802;
+// function delay(ms) {
+//   return new Promise(resolve => setTimeout(resolve, ms));
+// }
 app.use(function(req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', '*'); // update to match the domain you will make the request from
   res.setHeader('Access-Control-Allow-Headers', '*');
@@ -46,13 +51,9 @@ app.use(function(req, res, next) {
   // res.setHeader("'Content-Type', 'application/json'");
   next();
 });
-app.use(cors({ origin: '*' }));
-app.use(express.json());
-
-const PORT = 7802;
 function delay(ms) {
-  let start = Date.now();
-  return new Promise(resolve => setTimeout(resolve, Date.now() + ms - start));
+  // let start = Date.now();
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 connectDB();
 
@@ -60,8 +61,25 @@ let server = app.listen(PORT, function() {
   console.log(`listening to requests on port ${PORT}`);
 });
 
+global.SENDS_PER_SECOND = 10;
+global.NUMBER_OF_SENDS = 0;
+global.TOTALNUMBER = 0;
+global.DELAY = 2000;
+global.IS_TEST = true;
+global.IS_SENDING = false;
+global.FILENAME = '';
+global.DONOTCONTINUEWITHSEND = false;
+global.DELIVEREDCOUNT = 0;
+global.UNDELIVEREDCOUNT = 0;
+global.ENROUTECOUNT = 0;
+global.SENTSTATUSCOUNT = 0;
+global.FAILEDCOUNT = 0;
+global.JSON_TO_SLICE = 0;
+global.REJECTS_ARRAY = [];
+global.JSON_UNUSED = [];
+
 app.get('/api/text', async (req, res) => {
-  let newtimeout = await delay(1000);
+  let newtimeout = await delay(0);
   res.json({
     messageId: [
       '5e05ae1c-44c6-297b-d354-f4fb58ab179e',
@@ -70,107 +88,83 @@ app.get('/api/text', async (req, res) => {
   });
   clearTimeout(newtimeout);
 });
-app.get('/api/text2', async (req, res) => {
-  let newtimeout = await delay(1000);
-  res.send(
-    [
-      '{"status":"REJECTD"}',
-      '{"status": "DELIVERD"}',
-      '{"status": "UNDELIVERD"}'
-    ][Math.floor(Math.random() * 3)]
-  );
-  clearTimeout(newtimeout);
+
+app.get('/api/getmessagecounts/:page', async (req, res) => {
+  const resPerPage = 100; // results per page
+  const page = req.params.page || 1; // Page
+  const orders = await MessageCounts.find({})
+    .sort('-date')
+    .skip(resPerPage * page - resPerPage)
+    .limit(resPerPage);
+
+  return res.json(orders);
 });
+
 // app.get('/api/reportCount', async (req, res) => {
 //   // await delay(1000);
 // });
 app.post('/api/clearLogs', async (req, res) => {
   try {
-    console.log(req.body);
-    const {
-      sentCount,
-      deliveredCount,
-      unDeliveredCount,
-      enrouteCount,
-      rejectedCount,
-      unknownCount,
-      sentStatus,
-      expiredCount,
-      deletedCount,
-      acceptedCount
-    } = req.body;
-    console.log(req.body);
-    const newMesage = new MessageCounts({
-      sentCount,
-      deliveredCount,
-      unDeliveredCount,
-      enrouteCount,
-      rejectedCount,
-      unknownCount,
-      sentStatus,
-      expiredCount,
-      deletedCount,
-      acceptedCount
-    });
-    await newMesage.save();
-    await Messages.deleteMany({});
-    res.json({ msg: 'success' });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ msg: 'an error occured' });
-  }
+    NUMBER_OF_SENDS = 0;
+    global.DELIVEREDCOUNT = 0;
+    global.UNDELIVEREDCOUNT = 0;
+    global.ENROUTECOUNT = 0;
+    global.SENTSTATUSCOUNT = 0;
+    global.FAILEDCOUNT = 0;
+    res.json({ success: true });
+  } catch (error) {}
 });
 app.get('/api/checkForFileExistence', async (req, res) => {
   // await delay(1000);
   // res.json({ messageId: uuid() });
   try {
-    let deliveredCount = await Messages.countDocuments({ status: 'DELIVRD' });
-    let unDeliveredCount = await Messages.countDocuments({ status: 'UNDELIV' });
-    let unknownCount = await Messages.countDocuments({ status: 'UNKNOWN' });
-    let rejectedCount = await Messages.countDocuments({ status: 'REJECTD' });
-    let enrouteCount = await Messages.countDocuments({ status: 'ENROUTE' });
-    let sentStatus = await Messages.countDocuments({ status: 'SENT' });
+    // let deliveredCount = await Messages.countDocuments({ status: 'DELIVRD' });
+    // let unDeliveredCount = await Messages.countDocuments({ status: 'UNDELIV' });
+    // let unknownCount = await Messages.countDocuments({ status: 'UNKNOWN' });
+    // let rejectedCount = await Messages.countDocuments({ status: 'REJECTD' });
+    // let enrouteCount = await Messages.countDocuments({ status: 'ENROUTE' });
+    // let sentStatus = await Messages.countDocuments({ status: 'SENT' });
     // let expiredCount = await Messages.countDocuments({ status: 'EXPIRED' });
     // let deletedCount = await Messages.countDocuments({ status: 'DELETED' });
     // let acceptedCount = await Messages.countDocuments({ status: 'ACCEPTD' });
+    // let noRouteCount = await Messages.countDocuments({ status: 'NO ROUTES' });
 
     // res.json({ deliveredCount, unDeliveredCount, unknownCount });
     let file = fsExtra.existsSync('./public/file3.csv');
-    const messageCount = await Messages.countDocuments();
-    console.log(messageCount);
-    const fileStatus = await FileName.findOne({});
+    // const messageCount = await Messages.countDocuments();
+    // console.log(messageCount);
+    // const fileStatus = await FileName.findOne({});
     // console.log(file);
     if (file) {
       fs.readFile('./public/file3.csv', 'utf8', (err, data) => {
         res.json({
           exists: data,
-          deliveredCount,
-          unDeliveredCount,
-          rejectedCount,
-          unknownCount,
-          messageCount,
-          enrouteCount,
-          sentStatus,
-          expiredCount: 0,
-          deletedCount: 0,
-          acceptedCount: 0,
-          ...fileStatus
+          deliveredCount: DELIVEREDCOUNT,
+          // NUMBER_OF_SENDS,
+          unDeliveredCount: UNDELIVEREDCOUNT,
+          // unknownCount,
+          // failed: FAILEDCOUNT,
+          rejectedCount: FAILEDCOUNT,
+          enrouteCount: ENROUTECOUNT,
+          sentStatus: SENTSTATUSCOUNT,
+          speed: SENDS_PER_SECOND,
+          messageCount: NUMBER_OF_SENDS
+          // ...fileStatus
         });
       });
     } else {
       res.json({
         exists: false,
-        deliveredCount,
-        rejectedCount,
-        unDeliveredCount,
-        unknownCount,
-        messageCount,
-        enrouteCount,
-        sentStatus,
-        expiredCount: 0,
-        deletedCount: 0,
-        acceptedCount: 0,
-        ...fileStatus
+        deliveredCount: DELIVEREDCOUNT,
+        // NUMBER_OF_SENDS,
+        // failed: FAILEDCOUNT,
+        unDeliveredCount: UNDELIVEREDCOUNT,
+        speed: SENDS_PER_SECOND,
+        // unknownCount,
+        rejectedCount: FAILEDCOUNT,
+        enrouteCount: ENROUTECOUNT,
+        sentStatus: SENTSTATUSCOUNT,
+        messageCount: NUMBER_OF_SENDS
       });
     }
   } catch (e) {
@@ -230,14 +224,7 @@ app.get('/api/status', (req, res) => {
     }
   );
 });
-// app.get('/api/getFileStatus', async (req, res) => {
-//   ;
-//   if (!fileStatus) {
-//     return res.json({ msg: null });
-//   }
 
-//   res.json({ ...fileStatus });
-// });
 var storage = multer.diskStorage({
   destination: function(req, file, cb) {
     cb(null, 'public');
@@ -251,10 +238,8 @@ var upload = multer({ storage: storage }).single('file');
 app.post('/api/upload', (req, res) => {
   upload(req, res, async function(err) {
     if (err instanceof multer.MulterError) {
-      console.log(err);
       return res.status(500).json(err);
     } else if (err) {
-      console.log(err);
       return res.status(500).json(err);
     }
     console.log(req.file);
@@ -263,16 +248,12 @@ app.post('/api/upload', (req, res) => {
   });
 });
 let io = socket(server);
-global.SENDS_PER_SECOND = 10;
-global.NUMBER_OF_SENDS = 0;
-global.DELAY = 1000;
-global.JSON_UNUSED = [];
+
 io.on('connection', (socket, id) => {
   // app.get('/api', (req, res) => {
   console.log('connected');
   // res.send('success');
   app.get('/api/downloadnew', async function(req, res) {
-    // let q = req.query.q || 1;
     let randomFileName = `./public/file3.csv`;
     try {
       res.download(randomFileName); // Set disposition and send it.
@@ -288,30 +269,22 @@ io.on('connection', (socket, id) => {
 
   // });
   socket.on('kill', async _ => {
-    let fileFromDb = await FileName.findOne();
-
-    fileFromDb.isSending = false;
-    fileFromDb.isPause = false;
-    await fileFromDb.save();
-    console.log('saved');
-    fs.unlink('./public/file3.csv', (err, data) => {
-      console.log('file unlink success');
+    // setImmediate(() => {
+    process.nextTick(() => {
+      DONOTCONTINUEWITHSEND = true;
       io.sockets.emit('processKilled', true);
       process.exit(1);
     });
+    // });
   });
   socket.on('pause', async _ => {
-    // JSON_UNUSED
+    JSON_UNUSED = JSON_UNUSED.slice(NUMBER_OF_SENDS);
+    DONOTCONTINUEWITHSEND = true;
     console.log('pause me now');
-    global.DELAY = 820000;
-    // const fileStatus = await FileName.findOne({});
-    // fileStatus.isPause = true;
-    // await fileStatus.save();
-    FileName.findOneAndUpdate({}, { isPause: true }, () => {
-      console.log('updated');
-    });
-    const json2csvParser = new Parser({ fields: ['phone', 'message'] });
-    const csvUnused = json2csvParser.parse(JSON_UNUSED);
+    DELAY = 999999;
+    var csvUnused = convertJsonToCsv
+      .convertArrayOfObjects(JSON_UNUSED, ['phone', 'message'])
+      .replace(/["']/g, '');
     fs.writeFile('./public/file3.csv', csvUnused, async err => {
       // throws an error, you could also catch it here
 
@@ -319,150 +292,139 @@ io.on('connection', (socket, id) => {
       if (err) throw err;
       console.log('csv saved!');
       await delay(2000);
-      // process.exit(1);/
+
+      // process.exit(1);
 
       // success case, the file was saved
     });
   });
   socket.on('setSpeed', speed => {
     SENDS_PER_SECOND = speed;
+    console.log('newspeed', SENDS_PER_SECOND);
   });
   // });
   // console.log('here is the id ', socket.id);
 
-  let newCsv;
+  // let newCsv;
+  // let intervalGarbage = setInterval(() => {
+  //   global.gc();
+  //   console.log('gc DONE');
+  // }, 15000);
   socket.on('start', async data => {
-    DELAY = 1000;
-
     let timeout;
-
+    DELAY = 1000;
+    DONOTCONTINUEWITHSEND = false;
+    JSON_TO_SLICE = 0;
     const { filename, ani, withLeadingOne } = data;
     if (!ani) {
       return io.sockets.emit('stop', true);
     }
-    // FileName.findOne({name: filename}, (err, data)=> {
-
-    // })
-    let fileNew = await FileName.findOne();
-    fileNew.isSending = true;
-    fileNew.isPause = false;
-    fileNew.displayName = filename;
-    fileNew.phoneNumberSending = ani;
-    fileNew.withLeadingOne = withLeadingOne;
-
-    // process the file
-    // sendFunctions(fileName);
 
     const startDate = new Date().getTime();
 
     let jsonArray = await csvtojson().fromFile(`./public/file3.csv`);
-
     console.log(jsonArray);
-    fileNew.totalCount = jsonArray.length;
-    fileNew.save(function(err) {
-      if (err) return handleError(err);
-      // saved!
-    });
-    io.sockets.emit('totalNumber', jsonArray.length);
+    // fileNew.totalCount = jsonArray.length;
+
     // return
+    // global.ORIGINAL_LENGTH = jsonArray.length;
     JSON_UNUSED = jsonArray;
-    await delay(5000);
+    TOTALNUMBER = jsonArray.length;
+    io.sockets.emit('totalNumber', jsonArray.length);
+    // await delay(1000);
+    const statusSwitch = (s, io) => {
+      switch (s) {
+        case 'DELIVRD':
+          DELIVEREDCOUNT += 1;
+          return io.sockets.emit(s, DELIVEREDCOUNT);
+        case 'UNDELIV':
+          UNDELIVEREDCOUNT += 1;
+          return io.sockets.emit(s, UNDELIVEREDCOUNT);
+        case 'REJECTD':
+          FAILEDCOUNT += 1;
+          return io.sockets.emit(s, FAILEDCOUNT);
+        case 'SENT':
+          SENTSTATUSCOUNT += 1;
+          return io.sockets.emit(s, SENTSTATUSCOUNT);
+        case 'ENROUTE':
+          ENROUTECOUNT += 1;
+          return io.sockets.emit(s, ENROUTECOUNT);
+      }
+    };
     for (let i = 0; i < jsonArray.length; i++) {
-      const randomAni = { phone: '123456780' };
+      if (DONOTCONTINUEWITHSEND) {
+        return;
+      }
 
       request(
-        `http://163.172.233.88:8001?command=submit&ani=0123456789&dnis=${
-          withLeadingOne ? '1' : ''
+        `https://163.172.233.88:8002?command=submit&ani=${ani}&dnis=${
+          `${jsonArray[i].phone}`[0] == '1' ? '' : '1'
         }${
           jsonArray[i].phone
         }&username=FreshData2way3&password=766emk93&message=${
           jsonArray[i].message
         }`,
-        // `http://localhost:7800/api/text`,
+        // `http://localhost:9090/api/text`,
         function(error, response, body) {
           // console.log(body);
-          if (body !== 'NO ROUTES') {
-            try {
-              // NUMBER_OF_SENDS++;
-              // io.sockets.emit('sent', NUMBER_OF_SENDS);
-              io.sockets.emit('sent', NUMBER_OF_SENDS);
+          // console.log(body, response, error, '396');
+          NUMBER_OF_SENDS++;
 
-              var message = new Messages({
-                messageId: JSON.parse(body).message_id,
-                message: jsonArray[i].message,
-                phone: jsonArray[i].phone,
-                senderID: '123455633434'
-              });
-              message.save(function(err) {
-                if (err) throw err;
-                // saved!
-                NUMBER_OF_SENDS++;
-
-                // timeout = setTimeout(() => {}, 35000);
-              });
-
-              new Timeout(17000).promise().then(resTimer => {
-                try {
-                  request(
-                    `http://163.172.233.88:8001?username=FreshData2way3&password=766emk93&messageId=${
-                      JSON.parse(body).message_id
-                    }&command=query`,
-                    // 'http://localhost:7800/api/text2',
-                    function(errQuery, responseQuery, bodyQuery) {
-                      // console.log(bodyQuery, 'bodyquery');
-                      let status = JSON.parse(bodyQuery).status;
-                      // console.log(status, 'from line 375 I got');
-                      io.sockets.emit(status);
-
-                      Messages.findOneAndUpdate(
-                        { messageId: JSON.parse(body).message_id },
-                        { status },
-                        { new: true },
-                        (err, doc) => {
-                          if (err) {
-                            console.log('err from save');
-                          }
-                          clearTimeout(resTimer.timeout);
-
-                          // clearTimeout(timeout);
-                        }
-                      );
-                    }
-                  );
-                } catch (error) {
-                  clearTimeout(timeout);
-                  console.log('From second catch block');
-                }
-              });
-            } catch (error) {
-              console.log(error);
-            }
-          } else {
-            console.log(body);
+          try {
+            io.sockets.emit('sent', NUMBER_OF_SENDS);
+            io.sockets.emit('totalNumber', TOTALNUMBER - NUMBER_OF_SENDS);
+            new Timeout(30000).promise().then(resTimer => {
+              try {
+                request(
+                  `https://163.172.233.88:8002?username=FreshData2way3&password=766emk93&messageId=${
+                    JSON.parse(body).message_id
+                  }&command=query`,
+                  function(errQuery, responseQuery, bodyQuery) {
+                    let status = JSON.parse(bodyQuery).status;
+                    statusSwitch(status, io);
+                    // io.sockets.emit(status);
+                    clearTimeout(resTimer.timeout);
+                  }
+                );
+              } catch (error) {
+                // clearTimeout(resTimer.timeout);
+                console.log(error, 'From second catch block');
+              }
+              // statusSwitch('DELIVRD', io);
+            });
+          } catch (error) {
+            console.log(error);
+            console.log('no routes');
           }
         }
       );
-
-      JSON_UNUSED = [...JSON_UNUSED].splice(1);
-
+      // JSON_UNUSED = [...JSON_UNUSED].slice(1);
+      JSON_TO_SLICE++;
       if (i % SENDS_PER_SECOND === 0) {
         console.log('wo');
-        let sendTime = await delay(DELAY);
+        let sendTime = await delay(2000);
         clearTimeout(sendTime);
+        // setInterval(() => {
+        global.gc();
+        global.gc();
+        global.gc();
+        global.gc();
+        global.gc();
+        global.gc();
+        console.log('gc DONE');
+        // }, 15000);
       }
     }
+    // clearTimeout(intervalGarbage);
     io.sockets.emit('operationComplete', true);
+    JSON_TO_SLICE = 0;
     console.log(
       `Time elapsed ${Math.round((new Date().getTime() - startDate) / 1000)} s`
     );
     fs.unlink('./public/file3.csv', (err, data) => {
       console.log('file unlink success');
     });
-    let fileFromDb = await FileName.findOne();
 
-    fileFromDb.isSending = false;
-    fileFromDb.isPause = false;
-    await fileFromDb.save();
     console.log('saved');
   });
 });

@@ -167,8 +167,6 @@ class Pine extends Component {
           localStorage.removeItem('isSendingTwilio');
         });
         socket.on('sent', data => {
-          // localStorage.setItem('totalNumberTwilio', this.state.totalCount - data);
-
           this.setState({
             sentCount: parseInt(this.state.sentCount) + 1
             // totalCount: this.state.totalCount - data
@@ -176,7 +174,6 @@ class Pine extends Component {
         });
         socket.on('pauseDone', data => {
           localStorage.setItem('pauseTwilio', '1');
-          localStorage.removeItem('totalNumberTwilio');
 
           this.setState({
             isPaused: true,
@@ -205,6 +202,9 @@ class Pine extends Component {
     const { sentCount } = this.state;
     this.setState({
       sentCount: 0,
+      deliveredCount: 0,
+      unDeliveredCount: 0,
+      rejectedCount: 0,
       loading: false
     });
     const data = {

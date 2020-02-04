@@ -1,0 +1,24 @@
+{
+  "apps": [
+    {
+      "name": "accountone",
+      "script": "index.js",
+      "node_args": "--expose-gc"
+    },
+    {
+      "name": "accounttwo",
+      "script": "indexAcct2.js",
+      "node_args": "--expose-gc"
+    },
+    {
+      "name": "accountthree",
+      "script": "indexAcct3.js",
+      "node_args": "--expose-gc"
+    },
+    {
+      "name": "twilio",
+      "script": "indexForTwilio",
+      "node_args": "--expose-gc"
+    }
+  ]
+}
