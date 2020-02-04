@@ -15,8 +15,7 @@ let Messages = require('./models/Messages');
 const { Parser } = require('json2csv');
 const convertJsonToCsv = require('convert-json-to-csv');
 const q = require('query-string');
-const accountSid = 'AC866fa511053e3a30b6a0b0d1af276d81';
-const authToken = '244946e0ff6fa32b864de9de41b7feaa';
+
 const client = require('twilio')(accountSid, authToken);
 
 let uuid = require('uuid');
