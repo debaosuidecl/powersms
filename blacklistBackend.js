@@ -189,7 +189,7 @@ io.on('connection', socket => {
     console.log(suppressionWithReasons);
     console.log('final end');
     io.sockets.emit('finalCount', countObject);
-    io.sockets.emit('reasons', suppressionWithReasons);
+    io.sockets.emit('reasons', Object.keys(suppressionWithReasons).length);
     // 2darray = [[1,23,3],[1,23,3],[1,23,3]]
     // console.log(twoDArray);
 
