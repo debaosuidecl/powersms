@@ -24,6 +24,7 @@
     "fs-extra": "^8.1.0",
     "fuzzy-search": "^3.1.0",
     "google-libphonenumber": "^3.2.6",
+    "graceful-fs-extra": "^2.0.0",
     "gravatar": "^1.8.0",
     "json2csv": "^4.5.4",
     "jsonwebtoken": "^8.5.1",
