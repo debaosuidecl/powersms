@@ -186,10 +186,10 @@ io.on('connection', socket => {
       // global.gc();
       // global.gc();
     }
-    console.log(suppressionWithReasons);
+    console.log(Object.keys(suppressionWithReasons).length);
     console.log('final end');
     io.sockets.emit('finalCount', countObject);
-    io.sockets.emit('reasons', Object.keys(suppressionWithReasons).length);
+    io.sockets.emit('reasons', suppressionWithReasons);
     // 2darray = [[1,23,3],[1,23,3],[1,23,3]]
     // console.log(twoDArray);
 
