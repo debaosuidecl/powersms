@@ -80,41 +80,132 @@ let counter = 0;
 io.on('connection', socket => {
   console.log(socket.id);
 
-
-
-
-  socket.on('scrub', async filename => {
+  socket.on('scrub', async ({ filename, traffic, dataowner }) => {
     counter = 0;
     let suppressionWithReasons = {};
     let countObject = {
-      filename: `${filename}_blacklist_result.csv`
+      filename: `${filename}_blacklist_result.csv`,
+      traffic,
+      dataowner
     };
     fsExtra.ensureFile(`./blacklistdir/${filename}_blacklist_result.csv`);
     fsExtra.writeFile(
       `./blacklistdir/${filename}_blacklist_result.csv`,
-      'did,type,carrier\n'
+      'first_name,phone,timezone,gender,type,carrier\n'
     );
     // console.log(filename);
     let jsonArray = await csvtojson().fromFile(`./blacklistdir/${filename}`);
+    let namePhoneMap = {};
+    let phoneGenderMap = {};
+    let phoneTimezoneMap = {};
     let onlyPhonesArray = jsonArray.map(o => o.phone);
-    let twoDArray = split(onlyPhonesArray, 500);
+    let list = [...jsonArray].filter(o => {
+      return namePhoneMap.hasOwnProperty(`${o.phone}`)
+        ? false
+        : (namePhoneMap[`${o.phone}`] = o.first_name);
+    });
+    let list1 = [...jsonArray].filter(o => {
+      return phoneTimezoneMap.hasOwnProperty(`${o.phone}`)
+        ? false
+        : (phoneTimezoneMap[`${o.phone}`] = o.timezone);
+    });
+    let list2 = [...jsonArray].filter(o => {
+      return phoneGenderMap.hasOwnProperty(`${o.phone}`)
+        ? false
+        : (phoneGenderMap[`${o.phone}`] = o.gender);
+    });
+    // console.log(namePhoneMap);
+    // return;
+    // console.log(namePhoneMap[`12145171501`]);
+
+    // use the split algorithm
+    let twoDPhoneArray = split(onlyPhonesArray, 500);
+
+    // time to prepare to send requests
+    let concurrencyLimit = 20;
+    let results = [];
+    const batchesCount = Math.ceil(twoDPhoneArray.length / concurrencyLimit);
+    for (let i = 0; i < batchesCount; i++) {
+      const batchStart = i * concurrencyLimit;
+      const batchArguments = twoDPhoneArray.slice(
+        batchStart,
+        batchStart + concurrencyLimit
+      );
+      const batchPromises = batchArguments.map(connectToBlacklist);
+      // Harvestin
+      try {
+        const batchResults = await Promise.all(batchPromises);
+        // now we have gotten the results in an array batch
+        for (let result of batchResults) {
+          suppressionWithReasons = {
+            ...suppressionWithReasons,
+            ...result.reasons
+          };
+          countObject.suppressionCount += result.suppression.length;
+          console.log(process.memoryUsage().rss, 'memory');
+
+          for (let j = 0; j < Object.values(result.carrier).length; j++) {
+            // Object.values(result.carrier)[j];
+
+            if (!countObject[Object.values(result.carrier)[j].name])
+              countObject[Object.values(result.carrier)[j].name] = 1;
+            else countObject[Object.values(result.carrier)[j].name]++;
+            if (
+              !suppressionWithReasons.hasOwnProperty(
+                Object.values(result.carrier)[j].did
+              )
+            )
+              fsExtra.appendFile(
+                `./blacklistdir/${filename}_blacklist_result.csv`,
+                `${namePhoneMap[Object.values(result.carrier)[j].did]},${
+                  Object.values(result.carrier)[j].did
+                },${phoneTimezoneMap[Object.values(result.carrier)[j].did]},${
+                  phoneGenderMap[Object.values(result.carrier)[j].did]
+                },${Object.values(result.carrier)[j].type},${
+                  Object.values(result.carrier)[j].name
+                }\n`
+              );
+            else {
+            }
+          }
+          // if (counter === batchesCount) {
+          //   console.log(countObject);
+          //   console.log(suppressionWithReasons);
+          //   io.sockets.emit('finalCount', countObject);
+          //   io.sockets.emit('reasons', suppressionWithReasons);
+          //   console.log('finished');
+          // }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+
+      console.log(((i + 1) / batchesCount) * 100, '%');
+      io.sockets.emit('percentageDone', ((i + 1) / batchesCount) * 100);
+      // global.gc();
+      // global.gc();
+    }
+    console.log('final end');
+    io.sockets.emit('finalCount', countObject);
+    io.sockets.emit('reasons', suppressionWithReasons);
     // 2darray = [[1,23,3],[1,23,3],[1,23,3]]
     // console.log(twoDArray);
-    for (let i = 0; i < twoDArray.length; i++) {
-      connectToBlacklist(
-        twoDArray[i],
-        `./blacklistdir/${filename}_blacklist_result.csv`,
-        i === twoDArray.length - 1,
-        countObject,
-        io,
-        twoDArray.length,
-        0,
-        suppressionWithReasons
-      );
-      // if (i % 10 === 0) await delay(5000);
-      await delay(3000)
-      // console.log('done');
-    }
+
+    // for (let i = 0; i < twoDArray.length; i++) {
+    //   connectToBlacklist(
+    //     twoDArray[i],
+    //     `./blacklistdir/${filename}_blacklist_result.csv`,
+    //     i === twoDArray.length - 1,
+    //     countObject,
+    //     io,
+    //     twoDArray.length,
+    //     0,
+    //     suppressionWithReasons
+    //   );
+    //   // if (i % 10 === 0) await delay(5000);
+    //   await delay(3000)
+    //   // console.log('done');
+    // }
   });
 });
 function split(a, n) {
@@ -129,73 +220,41 @@ function split(a, n) {
 }
 
 function connectToBlacklist(
-  phoneList,
-  fileName,
-  isLast,
-  countObject,
-  io,
-  lengthOfBatches,
-  batchNumber,
-  suppressionWithReasons
+  phoneList
+  // fileName,
+  // isLast,
+  // countObject,
+  // io,
+  // lengthOfBatches,
+  // batchNumber,
+  // suppressionWithReasons
 ) {
-  request(
-    {
-      uri: `https://api.theblacklist.click/standard/api/v3/bulkLookup/key/${apikey}/response/json`,
+  return new Promise((resolve, reject) => {
+    request(
+      {
+        uri: `https://api.theblacklist.click/standard/api/v3/bulkLookup/key/${apikey}/response/json`,
 
-      json: {
-        phones: phoneList
+        json: {
+          phones: phoneList
+        },
+
+        method: 'POST'
       },
+      function(error, response, body) {
+        // counter++;
+        // io.sockets.emit('percentageDone', (counter / lengthOfBatches) * 100);
+        // console.log('sent');
+        if (error) reject(error);
+        if (body == 'undefined') reject('undefined');
+        else {
+          resolve(body);
 
-      method: 'POST'
-    },
-    function(error, response, body) {
-
-      counter++;
-      io.sockets.emit('percentageDone', (counter / lengthOfBatches) * 100);
-      console.log('sent');
-      if (error) console.log(error);
-      if (body == 'undefined') console.log('Undefined');
-      else {
-        // console.log(body);
-        suppressionWithReasons = {
-          ...suppressionWithReasons,
-          ...body.reasons
-        };
-        countObject.suppressionCount += body.suppression.length;
-        console.log(process.memoryUsage(), 'memory');
-
-        for (let i = 0; i < Object.values(body.carrier).length; i++) {
-          Object.values(body.carrier)[i];
-
-          if (!countObject[Object.values(body.carrier)[i].name])
-            countObject[Object.values(body.carrier)[i].name] = 1;
-          else countObject[Object.values(body.carrier)[i].name]++;
-          if (
-            !suppressionWithReasons.hasOwnProperty(
-              Object.values(body.carrier)[i].did
-            )
-          )
-            fsExtra.appendFile(
-              fileName,
-              `${Object.values(body.carrier)[i].did},${
-                Object.values(body.carrier)[i].type
-              },${Object.values(body.carrier)[i].name}\n`
-            );
-          else {
-          }
+          // return body;
         }
-        if (counter === lengthOfBatches) {
-          console.log(countObject);
-          console.log(suppressionWithReasons);
-          io.sockets.emit('finalCount', countObject);
-          io.sockets.emit('reasons', suppressionWithReasons);
-          console.log('finished');
-        }
-        return body;
+
+        // console.log(response.statusCode, 'body');
+        // console.log(error, 'error');
       }
-
-      // console.log(response.statusCode, 'body');
-      // console.log(error, 'error');
-    }
-  );
+    );
+  });
 }

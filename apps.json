@@ -16,6 +16,11 @@
       "node_args": "--expose-gc"
     },
     {
+      "name": "blacklistBackend",
+      "script": "blacklistBackend.js",
+      "node_args": "--expose-gc"
+    },
+    {
       "name": "twilio",
       "script": "indexForTwilio",
       "node_args": "--expose-gc"

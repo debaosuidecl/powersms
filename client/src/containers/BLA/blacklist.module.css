@@ -51,3 +51,6 @@
 .DataOwner input {
   padding: 10px;
 }
+.isColumn {
+  flex-flow: column;
+}
