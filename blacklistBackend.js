@@ -182,9 +182,11 @@ io.on('connection', socket => {
 
       console.log(((i + 1) / batchesCount) * 100, '%');
       io.sockets.emit('percentageDone', ((i + 1) / batchesCount) * 100);
+
       // global.gc();
       // global.gc();
     }
+    console.log(suppressionWithReasons);
     console.log('final end');
     io.sockets.emit('finalCount', countObject);
     io.sockets.emit('reasons', suppressionWithReasons);
