@@ -413,7 +413,7 @@ io.on('connection', (socket, id) => {
             request(
               `https://api.namecheap.com/xml.response?apiuser=freshdatanow&apikey=456695e07b3648ae8daeb66ea750f3db&username=freshdatanow&Command=namecheap.domains.dns.setHosts&ClientIp=122.178.155.204&SLD=${SLD}&TLD=${TLD}&HostName1=@&RecordType1=URL&Address1=${
                 newList[i].forwardURL
-              }?thru=Jan${new Date().getDate()}.${newList[i].domain}`,
+              }Jan.7.${newList[i].domain}`,
               (err, res, body) => {
                 console.log(body);
                 io.sockets.emit('forwardSuccessBulk', newList[i].domain);
@@ -421,7 +421,7 @@ io.on('connection', (socket, id) => {
                   'file.csv',
                   `${newList[i].domain},${
                     newList[i].forwardURL
-                  }?thru=Jan${new Date().getDate()}.${newList[i].domain}\n`
+                  }?Jan.7.${newList[i].domain}\n`
                 );
                 if (i === newList.length - 1) {
                   io.sockets.emit('bulkSendSuccess', true);
